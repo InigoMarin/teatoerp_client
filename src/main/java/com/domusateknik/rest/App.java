@@ -33,8 +33,12 @@ public class App {
 		Option optEstado = Option.builder("estado").longOpt("estado").desc("Ejemplo: estado=validar").numberOfArgs(2)
 				.argName("estado").build();
 
+		Option optUsuario = Option.builder("usuario").longOpt("usuario").desc("Ejemplo: usuario=Gurutze Agirre GAG")
+				.numberOfArgs(2).argName("usuario").build();
+
 		options.addOption(optAccion);
 		options.addOption(optEstado);
+		options.addOption(optUsuario);
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = null;
@@ -54,20 +58,20 @@ public class App {
 		if (cmdOK) {
 			String accion = cmd.getOptionValue("accion").toLowerCase();
 			String estado = cmd.getOptionValue("estado").toLowerCase();
+			String usuario = cmd.getOptionValue("usuario").toLowerCase();
 
 			logger.info("Acccion=" + cmd.getOptionValue("accion"));
 			logger.info("Estado=" + cmd.getOptionValue("estado"));
+			logger.info("Usuario=" + cmd.getOptionValue("usuario"));
 
-			enviarDatosServidor(accion, estado);
+			enviarDatosServidor(accion, estado, usuario);
 		}
 	}
 
-	public static void enviarDatosServidor(String accion, String estado) {
+	public static void enviarDatosServidor(String accion, String estado, String usuario) {
 		logger.info("Iniciado proceso " + estado + " " + accion);
 		String urlPath = "http://localhost:8083/api/";
-		// String getUrl =
-		// "http://localhost:8083/api/articulo?fase=VALIDAR&file=MaestroArticulo.xml";
-		String getUrl = urlPath + accion + "?fase=" + estado + "&file=" + accion + ".xml";
+		String getUrl = urlPath + accion + "?fase=" + estado + "&file=" + accion + "&usuario=" + usuario;
 		logger.info("Connectando ->" + getUrl);
 		WebResource webResource = client.resource(getUrl);
 		ClientResponse response = webResource.accept("application/json").get(ClientResponse.class);
@@ -80,11 +84,11 @@ public class App {
 		String result = response.getEntity(String.class);
 
 		if (result.equals("false")) {
-			String error = "Articulo no validado.";
+			String error = accion + " no validado.";
 			logger.severe(error);
 			throw new RuntimeException(error);
 		} else {
-			logger.info("Articulo validado.");
+			logger.info(accion + " validado.");
 		}
 
 		System.out.println("Response from the Server: " + result);
