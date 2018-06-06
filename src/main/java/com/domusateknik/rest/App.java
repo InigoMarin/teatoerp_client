@@ -1,6 +1,9 @@
 package com.domusateknik.rest;
 
+import java.net.URI;
 import java.util.logging.Logger;
+
+import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -20,15 +23,125 @@ public class App {
 
 	private static final Logger logger = Logger.getLogger("App");
 	private static final String APP_NAME = "Inteface.jar";
+	private static final String resource = "http://vmtc1:8083/api/";
+	// private static final String resource = "http://localhost:8083/api/";
 
-	public static void main(String[] args) {
-		// Poner log en una sola linea
-		System.setProperty("java.util.logging.SimpleFormatter.format", "%1$tF %1$tT %4$s %2$s %5$s%6$s%n");
+	public static void accionCorreo(Option optAccion, String[] args) {
 		HelpFormatter formatter = new HelpFormatter();
 		Options options = new Options();
 
-		Option optAccion = Option.builder("accion").longOpt("accion")
-				.desc("Ejemplo: accion=articulo o accion=estructura").numberOfArgs(2).argName("accion").build();
+		Option optTo = Option.builder("to").longOpt("to").desc("Ejemplo: to=imarin@domusateknik.com").numberOfArgs(2)
+				.argName("to").build();
+
+		Option optFrom = Option.builder("from").longOpt("from").desc("Ejemplo: from=imarin@domusateknik.com")
+				.numberOfArgs(2).argName("from").build();
+
+		Option optSubject = Option.builder("sub").longOpt("subject").desc("Ejemplo: subject= Asunto del correo")
+				.numberOfArgs(2).argName("body").build();
+
+		Option optUser = Option.builder("user").longOpt("user").desc("Ejemplo: body=usuario").numberOfArgs(2)
+				.argName("user").build();
+
+		Option optBody = Option.builder("body").longOpt("body").desc("Ejemplo: body=mail.html o texto").numberOfArgs(2)
+				.argName("body").build();
+
+		options.addOption(optAccion);
+		options.addOption(optTo);
+		options.addOption(optFrom);
+		options.addOption(optSubject);
+		options.addOption(optUser);
+		options.addOption(optBody);
+
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = null;
+		Boolean cmdOK = false;
+		try {
+			cmd = parser.parse(options, args);
+			if (cmd.hasOption("accion") && cmd.hasOption("to") && cmd.hasOption("from") && cmd.hasOption("sub")
+					&& cmd.hasOption("user") && cmd.hasOption("body")) {
+				cmdOK = true;
+			} else {
+				formatter.printHelp(APP_NAME, options);
+			}
+		} catch (ParseException e1) {
+			formatter.printHelp(APP_NAME, options);
+		}
+
+		if (cmdOK) {
+
+			String getUrl = "";
+
+			String accion = cmd.getOptionValue("accion").toLowerCase();
+			String to = cmd.getOptionValue("to").toLowerCase();
+			String from = cmd.getOptionValue("from").toLowerCase();
+
+			String subject = cmd.getOptionValue("sub");
+			String body = cmd.getOptionValue("body");
+			String user = cmd.getOptionValue("user");
+
+			getUrl = resource + accion + "?to=" + to + "&from=" + from + "@subject=" + subject + "&body=" + body
+					+ "&user=" + user;
+
+			enviarDatosServidor(getUrl);
+		}
+
+	}
+
+	public static void accionRenombrar(Option optAccion, String[] args) {
+		HelpFormatter formatter = new HelpFormatter();
+		Options options = new Options();
+
+		Option optFilename = Option.builder("filename").longOpt("filename").desc("Ejemplo: filename=articulo")
+				.numberOfArgs(2).argName("filename").build();
+
+		Option optDestFilename = Option.builder("destfilename").longOpt("destfilename")
+				.desc("Ejemplo: destfilename=SCOB000001").numberOfArgs(2).argName("desfilename").build();
+
+		Option optDirectory = Option.builder("directory").longOpt("directory").desc("Ejemplo: directory=articulo")
+				.numberOfArgs(2).argName("desfilename").build();
+
+		options.addOption(optAccion);
+		options.addOption(optFilename);
+		options.addOption(optDestFilename);
+		options.addOption(optDirectory);
+
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = null;
+
+		Boolean cmdOK = false;
+		try {
+			cmd = parser.parse(options, args);
+			if (cmd.hasOption("filename") && cmd.hasOption("destfilename") && cmd.hasOption("directory")) {
+				cmdOK = true;
+			} else {
+				formatter.printHelp(APP_NAME, options);
+			}
+		} catch (ParseException e1) {
+			formatter.printHelp(APP_NAME, options);
+		}
+
+		if (cmdOK) {
+
+			String accion = cmd.getOptionValue("accion").toLowerCase();
+			String filename = cmd.getOptionValue("filename").toLowerCase();
+			String destfilename = cmd.getOptionValue("destfilename").toLowerCase();
+			String directory = cmd.getOptionValue("directory").toLowerCase();
+
+			UriBuilder builder = UriBuilder.fromUri(resource).path("{accion}").queryParam("filename", filename)
+					.queryParam("destfilename", destfilename).queryParam("directory", directory);
+
+			URI uri = builder.build(accion);
+
+			enviarDatosServidor(uri.toString());
+
+		}
+
+	}
+
+	public static void accion(Option optAccion, String[] args) {
+
+		HelpFormatter formatter = new HelpFormatter();
+		Options options = new Options();
 
 		Option optEstado = Option.builder("estado").longOpt("estado").desc("Ejemplo: estado=validar").numberOfArgs(2)
 				.argName("estado").build();
@@ -36,9 +149,13 @@ public class App {
 		Option optUsuario = Option.builder("usuario").longOpt("usuario").desc("Ejemplo: usuario=Gurutze Agirre GAG")
 				.numberOfArgs(2).argName("usuario").build();
 
+		Option optCodigo = Option.builder("cod").longOpt("codigo").desc("Ejemplo: cod=SCON00000").numberOfArgs(2)
+				.argName("cod").build();
+
 		options.addOption(optAccion);
 		options.addOption(optEstado);
 		options.addOption(optUsuario);
+		options.addOption(optCodigo);
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = null;
@@ -58,20 +175,86 @@ public class App {
 		if (cmdOK) {
 			String accion = cmd.getOptionValue("accion").toLowerCase();
 			String estado = cmd.getOptionValue("estado").toLowerCase();
-			String usuario = cmd.getOptionValue("usuario").toLowerCase();
+
+			String usuario = "";
+			if (cmd.hasOption("usuario")) {
+				usuario = cmd.getOptionValue("usuario").toLowerCase();
+			}
 
 			logger.info("Acccion=" + cmd.getOptionValue("accion"));
 			logger.info("Estado=" + cmd.getOptionValue("estado"));
 			logger.info("Usuario=" + cmd.getOptionValue("usuario"));
 
-			enviarDatosServidor(accion, estado, usuario);
+			String codigo = "";
+			try {
+				codigo = cmd.getOptionValue("codigo").toLowerCase();
+			} catch (Exception e) {
+			}
+			logger.info("Codigo=" + codigo);
+
+			String getUrl = "";
+
+			if (accion.equals("estado")) {
+				if (usuario == null || usuario.length() == 0) {
+					getUrl = resource + accion + "?fase=" + estado + "&file=" + codigo;
+				} else {
+					getUrl = resource + accion + "?fase=" + estado + "&file=" + codigo + "&usuario=" + usuario;
+				}
+			} else {
+				if (usuario == null || usuario.length() == 0) {
+					getUrl = resource + accion + "?fase=" + estado + "&file=" + accion;
+				} else {
+					getUrl = resource + accion + "?fase=" + estado + "&file=" + accion + "&usuario=" + usuario;
+				}
+			}
+
+			enviarDatosServidor(getUrl);
 		}
+
 	}
 
-	public static void enviarDatosServidor(String accion, String estado, String usuario) {
-		logger.info("Iniciado proceso " + estado + " " + accion);
-		String urlPath = "http://localhost:8083/api/";
-		String getUrl = urlPath + accion + "?fase=" + estado + "&file=" + accion + "&usuario=" + usuario;
+	public static void main(String[] args) {
+		System.setProperty("java.util.logging.SimpleFormatter.format", "%1$tF %1$tT %4$s %2$s %5$s%6$s%n");
+
+		Option optAccion = Option.builder("accion").longOpt("accion")
+				.desc("Ejemplo: accion=articulo o accion=estructura o accion=estado o accion=correo").numberOfArgs(2)
+				.argName("accion").build();
+
+		HelpFormatter formatter = new HelpFormatter();
+
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = null;
+
+		Options options = new Options();
+
+		options.addOption(optAccion);
+		try {
+			cmd = parser.parse(options, args, true);
+			if (cmd.hasOption("accion")) {
+
+				String accion = cmd.getOptionValue("accion");
+
+				if (accion.startsWith("correo")) {
+					accionCorreo(optAccion, args);
+				} else if (accion.startsWith("renombrar")) {
+					accionRenombrar(optAccion, args);
+				}
+
+				else {
+					accion(optAccion, args);
+				}
+
+			} else {
+				formatter.printHelp(APP_NAME, options);
+			}
+		} catch (ParseException e1) {
+			formatter.printHelp(APP_NAME, options);
+		}
+
+	}
+
+	public static void enviarDatosServidor(String getUrl) {
+		logger.info("Iniciado proceso EnviarDatosServidor");
 		logger.info("Connectando ->" + getUrl);
 		WebResource webResource = client.resource(getUrl);
 		ClientResponse response = webResource.accept("application/json").get(ClientResponse.class);
@@ -84,11 +267,11 @@ public class App {
 		String result = response.getEntity(String.class);
 
 		if (result.equals("false")) {
-			String error = accion + " no validado.";
+			String error = getUrl + " no validado.";
 			logger.severe(error);
 			throw new RuntimeException(error);
 		} else {
-			logger.info(accion + " validado.");
+			logger.info(getUrl + " validado.");
 		}
 
 		System.out.println("Response from the Server: " + result);
