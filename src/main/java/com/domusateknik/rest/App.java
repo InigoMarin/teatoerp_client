@@ -1,7 +1,10 @@
 package com.domusateknik.rest;
 
+import java.io.IOException;
 import java.net.URI;
+import java.util.logging.FileHandler;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import javax.ws.rs.core.UriBuilder;
 
@@ -23,10 +26,12 @@ public class App {
 
 	private static final Logger logger = Logger.getLogger("App");
 	private static final String APP_NAME = "Inteface.jar";
-	private static final String resource = "http://vmtc1:8083/api/";
+	// private static final String resource = "http://vmtc1:8083/api/";
+	private static final String resource = "http://pcinf11:8083/api/";
 	// private static final String resource = "http://localhost:8083/api/";
 
 	public static void accionCorreo(Option optAccion, String[] args) {
+		logger.info("Accion Enviar correo Empezar.");
 		HelpFormatter formatter = new HelpFormatter();
 		Options options = new Options();
 
@@ -60,10 +65,13 @@ public class App {
 			if (cmd.hasOption("accion") && cmd.hasOption("to") && cmd.hasOption("from") && cmd.hasOption("sub")
 					&& cmd.hasOption("user") && cmd.hasOption("body")) {
 				cmdOK = true;
+
 			} else {
 				formatter.printHelp(APP_NAME, options);
+				logger.severe("Falta parametros.");
 			}
 		} catch (ParseException e1) {
+			logger.severe("Falta parametros.");
 			formatter.printHelp(APP_NAME, options);
 		}
 
@@ -79,15 +87,27 @@ public class App {
 			String body = cmd.getOptionValue("body");
 			String user = cmd.getOptionValue("user");
 
+			logger.info("*****PARAMETROS*******");
+			logger.info("accion=" + accion);
+			logger.info("to=" + to);
+			logger.info("from=" + from);
+			logger.info("subject=" + subject);
+			logger.info("body=" + body);
+			logger.info("user=" + user);
+			logger.info("******************");
+
 			getUrl = resource + accion + "?to=" + to + "&from=" + from + "@subject=" + subject + "&body=" + body
 					+ "&user=" + user;
 
 			enviarDatosServidor(getUrl);
+
 		}
+		logger.info("Accion Enviar correo Finalizar.");
 
 	}
 
 	public static void accionRenombrar(Option optAccion, String[] args) {
+		logger.info("Accion Renombrar Empezar.");
 		HelpFormatter formatter = new HelpFormatter();
 		Options options = new Options();
 
@@ -121,11 +141,18 @@ public class App {
 		}
 
 		if (cmdOK) {
-
 			String accion = cmd.getOptionValue("accion").toLowerCase();
 			String filename = cmd.getOptionValue("filename").toLowerCase();
 			String destfilename = cmd.getOptionValue("destfilename").toLowerCase();
 			String directory = cmd.getOptionValue("directory").toLowerCase();
+
+			logger.info("*****PARAMETROS*******");
+			logger.info("accion=" + accion);
+			logger.info("filename=" + filename);
+			logger.info("destfilename=" + destfilename);
+			logger.info("directory=" + directory);
+
+			logger.info("******************");
 
 			UriBuilder builder = UriBuilder.fromUri(resource).path("{accion}").queryParam("filename", filename)
 					.queryParam("destfilename", destfilename).queryParam("directory", directory);
@@ -135,11 +162,12 @@ public class App {
 			enviarDatosServidor(uri.toString());
 
 		}
+		logger.info("Accion Renombrar Finalizar.");
 
 	}
 
 	public static void accion(Option optAccion, String[] args) {
-
+		logger.info("Accion Compatible Empezar.");
 		HelpFormatter formatter = new HelpFormatter();
 		Options options = new Options();
 
@@ -211,40 +239,70 @@ public class App {
 			enviarDatosServidor(getUrl);
 		}
 
+		logger.info("Accion Compatible Finalizar.");
 	}
 
 	public static void main(String[] args) {
+
 		System.setProperty("java.util.logging.SimpleFormatter.format", "%1$tF %1$tT %4$s %2$s %5$s%6$s%n");
+		FileHandler fh;
+
+		try {
+			// This block configure the logger with handler and formatter
+			fh = new FileHandler("c:\\temp\\app.log");
+			logger.addHandler(fh);
+			SimpleFormatter formatter = new SimpleFormatter();
+			fh.setFormatter(formatter);
+
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		Option optAccion = Option.builder("accion").longOpt("accion")
 				.desc("Ejemplo: accion=articulo o accion=estructura o accion=estado o accion=correo").numberOfArgs(2)
 				.argName("accion").build();
 
 		HelpFormatter formatter = new HelpFormatter();
-
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = null;
 
 		Options options = new Options();
 
 		options.addOption(optAccion);
+
+		logger.info("----Argumentos-----------");
+		for (String argv : args) {
+			logger.info(argv.toString());
+		}
+		logger.info("----Fin Argumentos-----------");
+
+		String username = System.getProperty("user.name");
+
+		logger.info(username);
+
 		try {
 			cmd = parser.parse(options, args, true);
+
 			if (cmd.hasOption("accion")) {
 
 				String accion = cmd.getOptionValue("accion");
-
+				logger.info("Accion=" + accion);
 				if (accion.startsWith("correo")) {
 					accionCorreo(optAccion, args);
 				} else if (accion.startsWith("renombrar")) {
 					accionRenombrar(optAccion, args);
+
 				}
 
 				else {
 					accion(optAccion, args);
+
 				}
 
 			} else {
+				logger.info("Falta parametro accion ejecutable.");
 				formatter.printHelp(APP_NAME, options);
 			}
 		} catch (ParseException e1) {
