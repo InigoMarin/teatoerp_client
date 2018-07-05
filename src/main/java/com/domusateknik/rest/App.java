@@ -26,8 +26,8 @@ public class App {
 
 	private static final Logger logger = Logger.getLogger("App");
 	private static final String APP_NAME = "Inteface.jar";
-	// private static final String resource = "http://vmtc1:8083/api/";
-	private static final String resource = "http://pcinf11:8083/api/";
+	private static final String resource = "http://vmtc1:8083/api/";
+	// private static final String resource = "http://pcinf11:8083/api/";
 	// private static final String resource = "http://localhost:8083/api/";
 
 	public static void accionCorreo(Option optAccion, String[] args) {
@@ -142,8 +142,8 @@ public class App {
 
 		if (cmdOK) {
 			String accion = cmd.getOptionValue("accion").toLowerCase();
-			String filename = cmd.getOptionValue("filename").toLowerCase();
-			String destfilename = cmd.getOptionValue("destfilename").toLowerCase();
+			String filename = cmd.getOptionValue("filename").toUpperCase();
+			String destfilename = cmd.getOptionValue("destfilename").toUpperCase();
 			String directory = cmd.getOptionValue("directory").toLowerCase();
 
 			logger.info("*****PARAMETROS*******");
@@ -166,7 +166,7 @@ public class App {
 
 	}
 
-	public static void accion(Option optAccion, String[] args) {
+	public static void accion(Option optAccion, String[] args, String usuarioAudi) {
 		logger.info("Accion Compatible Empezar.");
 		HelpFormatter formatter = new HelpFormatter();
 		Options options = new Options();
@@ -206,12 +206,14 @@ public class App {
 
 			String usuario = "";
 			if (cmd.hasOption("usuario")) {
-				usuario = cmd.getOptionValue("usuario").toLowerCase();
+				usuario = cmd.getOptionValue("usuario").toUpperCase();
+			} else {
+				usuario = usuarioAudi.toUpperCase();
 			}
 
 			logger.info("Acccion=" + cmd.getOptionValue("accion"));
 			logger.info("Estado=" + cmd.getOptionValue("estado"));
-			logger.info("Usuario=" + cmd.getOptionValue("usuario"));
+			logger.info("Usuario=" + usuario);
 
 			String codigo = "";
 			try {
@@ -222,7 +224,7 @@ public class App {
 
 			String getUrl = "";
 
-			if (accion.equals("estado")) {
+			if (accion.equals("estado") || accion.equals("articulo") || accion.equals("estructura")) {
 				if (usuario == null || usuario.length() == 0) {
 					getUrl = resource + accion + "?fase=" + estado + "&file=" + codigo;
 				} else {
@@ -249,7 +251,7 @@ public class App {
 
 		try {
 			// This block configure the logger with handler and formatter
-			fh = new FileHandler("c:\\temp\\app.log");
+			fh = new FileHandler("c:\\temp\\interface.log");
 			logger.addHandler(fh);
 			SimpleFormatter formatter = new SimpleFormatter();
 			fh.setFormatter(formatter);
@@ -261,8 +263,8 @@ public class App {
 		}
 
 		Option optAccion = Option.builder("accion").longOpt("accion")
-				.desc("Ejemplo: accion=articulo o accion=estructura o accion=estado o accion=correo").numberOfArgs(2)
-				.argName("accion").build();
+				.desc("Ejemplo: accion=articulo,accion=estructura, accion=estado, accion=renombrar o accion=correo")
+				.numberOfArgs(2).argName("accion").build();
 
 		HelpFormatter formatter = new HelpFormatter();
 		CommandLineParser parser = new DefaultParser();
@@ -278,9 +280,9 @@ public class App {
 		}
 		logger.info("----Fin Argumentos-----------");
 
-		String username = System.getProperty("user.name");
+		String usuarioAudi = "TC" + System.getProperty("user.name").toUpperCase();
 
-		logger.info(username);
+		logger.info("USUARIO EJECUTAR APP=" + usuarioAudi);
 
 		try {
 			cmd = parser.parse(options, args, true);
@@ -293,12 +295,10 @@ public class App {
 					accionCorreo(optAccion, args);
 				} else if (accion.startsWith("renombrar")) {
 					accionRenombrar(optAccion, args);
-
 				}
 
 				else {
-					accion(optAccion, args);
-
+					accion(optAccion, args, usuarioAudi);
 				}
 
 			} else {
