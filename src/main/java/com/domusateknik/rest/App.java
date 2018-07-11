@@ -27,6 +27,7 @@ public class App {
 	private static final Logger logger = Logger.getLogger("App");
 	private static final String APP_NAME = "Inteface.jar";
 	private static final String resource = "http://vmtc1:8083/api/";
+	private static final String resourceWeb = "http://vmtc1:8083/";
 	// private static final String resource = "http://pcinf11:8083/api/";
 	// private static final String resource = "http://localhost:8083/api/";
 
@@ -280,7 +281,7 @@ public class App {
 		}
 		logger.info("----Fin Argumentos-----------");
 
-		String usuarioAudi = "TC" + System.getProperty("user.name").toUpperCase();
+		String usuarioAudi = "TC_" + System.getProperty("user.name").toUpperCase();
 
 		logger.info("USUARIO EJECUTAR APP=" + usuarioAudi);
 
@@ -293,7 +294,11 @@ public class App {
 				logger.info("Accion=" + accion);
 				if (accion.startsWith("correo")) {
 					accionCorreo(optAccion, args);
-				} else if (accion.startsWith("renombrar")) {
+				} else if (accion.startsWith("compararestructura")) {
+					accionCompararEstructura(optAccion, args);
+				}
+
+				else if (accion.startsWith("renombrar")) {
 					accionRenombrar(optAccion, args);
 				}
 
@@ -309,6 +314,72 @@ public class App {
 			formatter.printHelp(APP_NAME, options);
 		}
 
+	}
+
+	private static void accionCompararEstructura(Option optAccion, String[] args) {
+
+		logger.info("Accion Comparar Estructura Empezar.");
+
+		HelpFormatter formatter = new HelpFormatter();
+		Options options = new Options();
+
+		Option optCodigo = Option.builder("cod").longOpt("codigo").desc("Ejemplo: cod=SCON00000").numberOfArgs(2)
+				.argName("cod").build();
+
+		options.addOption(optAccion);
+		options.addOption(optCodigo);
+
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = null;
+
+		Boolean cmdOK = false;
+		try {
+			cmd = parser.parse(options, args);
+			if (cmd.hasOption("codigo")) {
+				cmdOK = true;
+			} else {
+				formatter.printHelp(APP_NAME, options);
+			}
+		} catch (ParseException e1) {
+			formatter.printHelp(APP_NAME, options);
+		}
+
+		if (cmdOK) {
+			String accion = "estructura";
+			String codigo = cmd.getOptionValue("codigo").toUpperCase();
+
+			logger.info("*****PARAMETROS*******");
+			logger.info("accion=" + accion);
+			logger.info("codigo=" + codigo);
+			logger.info("******************");
+
+			UriBuilder builder = UriBuilder.fromUri(resourceWeb).path("{accion}").path(codigo).path("comparar");
+
+			URI uri = builder.build(accion);
+
+			openURL(uri.toString());
+
+		}
+		logger.info("Accion Comparar Estructura Finalizar.");
+
+	}
+
+	private static void openURL(String url) {
+		String osName = System.getProperty("os.name");
+		try {
+			if (osName.startsWith("Windows")) {
+				Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
+			} else if (osName.startsWith("Mac OS X")) {
+				// Runtime.getRuntime().exec("open -a safari " + url);
+				// Runtime.getRuntime().exec("open " + url + "/index.html");
+				Runtime.getRuntime().exec("open " + url);
+			} else {
+				System.out.println("Please open a browser and go to " + url);
+			}
+		} catch (IOException e) {
+			System.out.println("Failed to start a browser to open the url " + url);
+			e.printStackTrace();
+		}
 	}
 
 	public static void enviarDatosServidor(String getUrl) {
