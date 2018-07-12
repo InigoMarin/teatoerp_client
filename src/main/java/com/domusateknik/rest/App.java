@@ -167,6 +167,75 @@ public class App {
 
 	}
 
+	public static void accionTipo(Option optAccion, String[] args, String usuarioAudi) {
+		logger.info("Accion Cambiar Tipo Empezar.");
+		HelpFormatter formatter = new HelpFormatter();
+		Options options = new Options();
+
+		Option optTipo = Option.builder("tipo").longOpt("tipo").desc("Ejemplo: tipo=07").numberOfArgs(2).argName("tipo")
+				.build();
+
+		Option optUsuario = Option.builder("usuario").longOpt("usuario").desc("Ejemplo: usuario=Gurutze Agirre GAG")
+				.numberOfArgs(2).argName("usuario").build();
+
+		Option optCodigo = Option.builder("cod").longOpt("codigo").desc("Ejemplo: cod=SCON00000").numberOfArgs(2)
+				.argName("cod").build();
+
+		options.addOption(optAccion);
+		options.addOption(optTipo);
+		options.addOption(optUsuario);
+		options.addOption(optCodigo);
+
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = null;
+
+		Boolean cmdOK = false;
+		try {
+			cmd = parser.parse(options, args);
+			if (cmd.hasOption("accion") && cmd.hasOption("tipo")) {
+				cmdOK = true;
+			} else {
+				formatter.printHelp(APP_NAME, options);
+			}
+		} catch (ParseException e1) {
+			formatter.printHelp(APP_NAME, options);
+		}
+
+		if (cmdOK) {
+			String accion = cmd.getOptionValue("accion").toLowerCase();
+			String tipo = cmd.getOptionValue("tipo").toLowerCase();
+
+			String usuario = "";
+			if (cmd.hasOption("usuario")) {
+				usuario = cmd.getOptionValue("usuario").toUpperCase();
+			} else {
+				usuario = usuarioAudi.toUpperCase();
+			}
+
+			logger.info("Acccion=" + cmd.getOptionValue("accion"));
+			logger.info("Tipo=" + cmd.getOptionValue("tipo"));
+			logger.info("Usuario=" + usuario);
+
+			String codigo = "";
+			try {
+				codigo = cmd.getOptionValue("codigo").toLowerCase();
+			} catch (Exception e) {
+			}
+			logger.info("Codigo=" + codigo);
+
+			String getUrl = "";
+
+			if (accion.equals("tipo")) {
+				getUrl = resource + accion + "?tipo=" + tipo + "&cod=" + codigo;
+
+			}
+
+			enviarDatosServidor(getUrl);
+		}
+
+		logger.info("Accion Cambar Tipo Finalizar.");
+	}
+
 	public static void accion(Option optAccion, String[] args, String usuarioAudi) {
 		logger.info("Accion Compatible Empezar.");
 		HelpFormatter formatter = new HelpFormatter();
@@ -296,6 +365,10 @@ public class App {
 					accionCorreo(optAccion, args);
 				} else if (accion.startsWith("compararestructura")) {
 					accionCompararEstructura(optAccion, args);
+				}
+
+				else if (accion.startsWith("tipo")) {
+					accionTipo(optAccion, args, usuarioAudi);
 				}
 
 				else if (accion.startsWith("renombrar")) {
