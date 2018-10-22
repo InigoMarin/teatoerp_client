@@ -28,8 +28,9 @@ public class App {
 	private static final String APP_NAME = "Inteface.jar";
 	private static final String resource = "http://vmtc1:8083/api/";
 	private static final String resourceWeb = "http://vmtc1:8083/";
-	// private static final String resource = "http://pcinf11:8083/api/";
+
 	// private static final String resource = "http://localhost:8083/api/";
+	// private static final String resourceWeb = "http://localhost:8083/";
 
 	public static void accionCorreo(Option optAccion, String[] args) {
 		logger.info("Accion Enviar correo Empezar.");
@@ -43,7 +44,7 @@ public class App {
 				.numberOfArgs(2).argName("from").build();
 
 		Option optSubject = Option.builder("sub").longOpt("subject").desc("Ejemplo: subject= Asunto del correo")
-				.numberOfArgs(2).argName("body").build();
+				.numberOfArgs(2).argName("sub").build();
 
 		Option optUser = Option.builder("user").longOpt("user").desc("Ejemplo: body=usuario").numberOfArgs(2)
 				.argName("user").build();
@@ -105,6 +106,53 @@ public class App {
 		}
 		logger.info("Accion Enviar correo Finalizar.");
 
+	}
+
+	public static void accionImportarEstructura(Option optAccion, String[] args) {
+		logger.info("Accion Importar Estructura Empezar.");
+		HelpFormatter formatter = new HelpFormatter();
+		Options options = new Options();
+
+		Option optCodigo = Option.builder("cod").longOpt("codigo").desc("Ejemplo: cod=SCON00000").numberOfArgs(2)
+				.argName("cod").build();
+
+		options.addOption(optAccion);
+		options.addOption(optCodigo);
+
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = null;
+
+		Boolean cmdOK = false;
+		try {
+			cmd = parser.parse(options, args);
+			if (cmd.hasOption("accion") && cmd.hasOption("cod")) {
+				cmdOK = true;
+			} else {
+				formatter.printHelp(APP_NAME, options);
+			}
+		} catch (ParseException e1) {
+			formatter.printHelp(APP_NAME, options);
+		}
+
+		if (cmdOK) {
+			String accion = cmd.getOptionValue("accion").toLowerCase();
+			String codigo = cmd.getOptionValue("codigo").toUpperCase();
+
+			logger.info("*****PARAMETROS*******");
+			logger.info("accion=" + accion);
+			logger.info("codigo=" + codigo);
+			logger.info("******************");
+
+			// UriBuilder builder =
+			// UriBuilder.fromUri(resource).path("{accion}").queryParam("codigo", codigo);
+			UriBuilder builder = UriBuilder.fromUri(resource).path("{accion}").path("{codigo}");
+
+			URI uri = builder.build(accion, codigo);
+
+			enviarDatosServidor(uri.toString());
+
+		}
+		logger.info("Accion Importar Estructura Finalizar.");
 	}
 
 	public static void accionRenombrar(Option optAccion, String[] args) {
@@ -332,8 +380,8 @@ public class App {
 			e.printStackTrace();
 		}
 
-		Option optAccion = Option.builder("accion").longOpt("accion")
-				.desc("Ejemplo: accion=articulo,accion=estructura, accion=estado, accion=renombrar o accion=correo")
+		Option optAccion = Option.builder("accion").longOpt("accion").desc(
+				"Ejemplo: accion=articulo,accion=estructura, accion=estado, accion=renombrar o accion=correo o accion=ImportarEstructura")
 				.numberOfArgs(2).argName("accion").build();
 
 		HelpFormatter formatter = new HelpFormatter();
@@ -359,12 +407,14 @@ public class App {
 
 			if (cmd.hasOption("accion")) {
 
-				String accion = cmd.getOptionValue("accion");
+				String accion = cmd.getOptionValue("accion").toLowerCase();
 				logger.info("Accion=" + accion);
 				if (accion.startsWith("correo")) {
 					accionCorreo(optAccion, args);
 				} else if (accion.startsWith("compararestructura")) {
 					accionCompararEstructura(optAccion, args);
+				} else if (accion.startsWith("importarestructura")) {
+					accionImportarEstructura(optAccion, args);
 				}
 
 				else if (accion.startsWith("tipo")) {
