@@ -116,8 +116,16 @@ public class App {
 		Option optCodigo = Option.builder("cod").longOpt("codigo").desc("Ejemplo: cod=SCON00000").numberOfArgs(2)
 				.argName("cod").build();
 
+		Option optItemId = Option.builder("item").longOpt("itemID").desc("Ejemplo: item=019331").numberOfArgs(2)
+				.argName("item").build();
+
+		Option optRevId = Option.builder("rev").longOpt("revID").desc("Ejemplo: rev=00").numberOfArgs(2).argName("rev")
+				.build();
+
 		options.addOption(optAccion);
 		options.addOption(optCodigo);
+		options.addOption(optItemId);
+		options.addOption(optRevId);
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = null;
@@ -125,7 +133,7 @@ public class App {
 		Boolean cmdOK = false;
 		try {
 			cmd = parser.parse(options, args);
-			if (cmd.hasOption("accion") && cmd.hasOption("cod")) {
+			if (cmd.hasOption("accion") && cmd.hasOption("cod") && cmd.hasOption("item") && cmd.hasOption("rev")) {
 				cmdOK = true;
 			} else {
 				formatter.printHelp(APP_NAME, options);
@@ -137,17 +145,24 @@ public class App {
 		if (cmdOK) {
 			String accion = cmd.getOptionValue("accion").toLowerCase();
 			String codigo = cmd.getOptionValue("codigo").toUpperCase();
+			String itemId = cmd.getOptionValue("itemId").toUpperCase();
+			String revId = cmd.getOptionValue("revId").toUpperCase();
 
 			logger.info("*****PARAMETROS*******");
 			logger.info("accion=" + accion);
 			logger.info("codigo=" + codigo);
+			logger.info("itemId=" + itemId);
+			logger.info("revId=" + revId);
 			logger.info("******************");
 
 			// UriBuilder builder =
 			// UriBuilder.fromUri(resource).path("{accion}").queryParam("codigo", codigo);
-			UriBuilder builder = UriBuilder.fromUri(resource).path("{accion}").path("{codigo}");
+			// UriBuilder builder =
+			// UriBuilder.fromUri(resource).path("{accion}").path("{codigo}");
 
-			URI uri = builder.build(accion, codigo);
+			UriBuilder builder = UriBuilder.fromUri(resource).path("{accion}").queryParam("codigo", codigo)
+					.queryParam("itemid", itemId).queryParam("revid", revId);
+			URI uri = builder.build(accion);
 
 			enviarDatosServidor(uri.toString());
 
