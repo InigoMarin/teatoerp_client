@@ -144,9 +144,9 @@ public class App {
 
 		if (cmdOK) {
 			String accion = cmd.getOptionValue("accion").toLowerCase();
-			String codigo = cmd.getOptionValue("codigo").toUpperCase();
-			String itemId = cmd.getOptionValue("itemId").toUpperCase();
-			String revId = cmd.getOptionValue("revId").toUpperCase();
+			String codigo = cmd.getOptionValue("cod").toUpperCase();
+			String itemId = cmd.getOptionValue("item").toUpperCase();
+			String revId = cmd.getOptionValue("rev").toUpperCase();
 
 			logger.info("*****PARAMETROS*******");
 			logger.info("accion=" + accion);
