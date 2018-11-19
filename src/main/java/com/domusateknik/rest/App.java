@@ -98,7 +98,7 @@ public class App {
 			logger.info("user=" + user);
 			logger.info("******************");
 
-			getUrl = resource + accion + "?to=" + to + "&from=" + from + "@subject=" + subject + "&body=" + body
+			getUrl = resource + accion + "?to=" + to + "&from=" + from + "&subject=" + subject + "&body=" + body
 					+ "&user=" + user;
 
 			enviarDatosServidor(getUrl);
