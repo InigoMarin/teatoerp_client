@@ -15,6 +15,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.json.simple.JSONObject;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -26,14 +27,15 @@ public class App {
 
 	private static final Logger logger = Logger.getLogger("App");
 	private static final String APP_NAME = "Inteface.jar";
+
 	private static final String resource = "http://vmtc1:8083/api/";
 	private static final String resourceWeb = "http://vmtc1:8083/";
 
 	// private static final String resource = "http://localhost:8083/api/";
 	// private static final String resourceWeb = "http://localhost:8083/";
 
-	public static void accionCorreo(Option optAccion, String[] args) {
-		logger.info("Accion Enviar correo Empezar.");
+	public static void accionCorreoTexto(Option optAccion, String[] args) {
+		logger.info("Accion Enviar correo Texto Empezar.");
 		HelpFormatter formatter = new HelpFormatter();
 		Options options = new Options();
 
@@ -98,10 +100,132 @@ public class App {
 			logger.info("user=" + user);
 			logger.info("******************");
 
-			getUrl = resource + accion + "?to=" + to + "&from=" + from + "&subject=" + subject + "&body=" + body
-					+ "&user=" + user;
+			// FORMATO GET
+			/*
+			 * getUrl = resource + accion + "?to=" + to + "&from=" + from + "&subject=" +
+			 * subject + "&body=" + body + "&user=" + user;
+			 * 
+			 * enviarDatosServidor(getUrl);
+			 */
 
-			enviarDatosServidor(getUrl);
+			getUrl = resource + accion;
+
+			JSONObject json = new JSONObject();
+			json.put("to", to);
+			json.put("from", from);
+			json.put("subject", subject);
+			json.put("body", body);
+			json.put("user", user);
+
+			String parameter = json.toJSONString();
+
+			enviarDatosServidorPost(getUrl, parameter);
+
+		}
+		logger.info("Accion Enviar correo Texto Finalizar.");
+
+	}
+
+	public static void accionCorreoCreacionArticulo(Option optAccion, String[] args) {
+		logger.info("Accion Enviar correo Empezar.");
+		HelpFormatter formatter = new HelpFormatter();
+		Options options = new Options();
+
+		Option optUser = Option.builder("user").longOpt("user").desc("Ejemplo: body=usuario").numberOfArgs(2)
+				.argName("user").build();
+
+		Option optFrom = Option.builder("from").longOpt("from").desc("Ejemplo: from=imarin@domusateknik.com")
+				.numberOfArgs(2).argName("from").build();
+
+		Option optSubject = Option.builder("sub").longOpt("subject").desc("Ejemplo: subject= Asunto del correo")
+				.numberOfArgs(2).argName("sub").build();
+
+		Option optTo = Option.builder("to").longOpt("to").desc("Ejemplo: to=imarin@domusateknik.com").numberOfArgs(2)
+				.argName("to").build();
+
+		Option optTemplate = Option.builder("template").longOpt("template").desc("creararticulo").numberOfArgs(2)
+				.argName("template").build();
+
+		Option optDesc = Option.builder("desc").longOpt("desc").desc("Se ha modificado").numberOfArgs(2).argName("desc")
+				.build();
+
+		Option optCod = Option.builder("cod").longOpt("cod").desc("Se ha modificado").numberOfArgs(2).argName("cod")
+				.build();
+
+		options.addOption(optAccion);
+		options.addOption(optUser);
+		options.addOption(optFrom);
+		options.addOption(optSubject);
+		options.addOption(optTo);
+		options.addOption(optTemplate);
+		options.addOption(optDesc);
+		options.addOption(optCod);
+
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = null;
+		Boolean cmdOK = false;
+		try {
+			cmd = parser.parse(options, args);
+			if (cmd.hasOption("accion") && cmd.hasOption("to") && cmd.hasOption("from") && cmd.hasOption("sub")
+					&& cmd.hasOption("user") && cmd.hasOption("template") && cmd.hasOption("template")) {
+				cmdOK = true;
+
+			} else {
+				formatter.printHelp(APP_NAME, options);
+				logger.severe("Falta parametros.");
+			}
+		} catch (ParseException e1) {
+			logger.severe("Falta parametros.");
+			formatter.printHelp(APP_NAME, options);
+		}
+
+		if (cmdOK) {
+
+			String getUrl = "";
+
+			String accion = cmd.getOptionValue("accion").toLowerCase();
+			String user = cmd.getOptionValue("user");
+			String from = cmd.getOptionValue("from").toLowerCase();
+			String subject = cmd.getOptionValue("sub");
+			String to = cmd.getOptionValue("to").toLowerCase();
+			String template = cmd.getOptionValue("template");
+			String desc = cmd.getOptionValue("desc");
+			String cod = cmd.getOptionValue("cod");
+
+			logger.info("*****PARAMETROS*******");
+			logger.info("accion=" + accion);
+			logger.info("user=" + user);
+			logger.info("from=" + from);
+			logger.info("subject=" + subject);
+			logger.info("to=" + to);
+			logger.info("template=" + template);
+			logger.info("desc=" + desc);
+			logger.info("cod=" + cod);
+			logger.info("******************");
+
+			// FORMATO GET
+			/*
+			 * getUrl = resource + accion + "?to=" + to + "&from=" + from + "&subject=" +
+			 * subject + "&body=" + body + "&user=" + user;
+			 * 
+			 * enviarDatosServidor(getUrl);
+			 */
+
+			getUrl = resource + accion;
+
+			JSONObject json = new JSONObject();
+
+			json.put("user", user);
+			json.put("from", from);
+			json.put("subject", subject);
+			json.put("to", to);
+			json.put("template", template);
+			json.put("desc", desc);
+			json.put("cod", cod);
+
+			String parameter = json.toJSONString();
+
+			enviarDatosServidorPost(getUrl, parameter);
 
 		}
 		logger.info("Accion Enviar correo Finalizar.");
@@ -424,8 +548,8 @@ public class App {
 
 				String accion = cmd.getOptionValue("accion").toLowerCase();
 				logger.info("Accion=" + accion);
-				if (accion.startsWith("correo")) {
-					accionCorreo(optAccion, args);
+				if (accion.startsWith("correocreararticulo")) {
+					accionCorreoCreacionArticulo(optAccion, args);
 				} else if (accion.startsWith("compararestructura")) {
 					accionCompararEstructura(optAccion, args);
 				} else if (accion.startsWith("importarestructura")) {
@@ -521,10 +645,36 @@ public class App {
 	}
 
 	public static void enviarDatosServidor(String getUrl) {
-		logger.info("Iniciado proceso EnviarDatosServidor");
+		logger.info("Iniciado proceso get EnviarDatosServidor");
 		logger.info("Connectando ->" + getUrl);
 		WebResource webResource = client.resource(getUrl);
 		ClientResponse response = webResource.accept("application/json").get(ClientResponse.class);
+
+		logger.info("Http Status  " + response.getStatus());
+		if (response.getStatus() != 200) {
+			throw new RuntimeException("HTTP Error: " + response.getStatus());
+		}
+
+		String result = response.getEntity(String.class);
+
+		if (result.equals("false")) {
+			String error = getUrl + " no validado.";
+			logger.severe(error);
+			throw new RuntimeException(error);
+		} else {
+			logger.info(getUrl + " validado.");
+		}
+
+		System.out.println("Response from the Server: " + result);
+	}
+
+	public static void enviarDatosServidorPost(String getUrl, String parameter) {
+		logger.info("Iniciado proceso post EnviarDatosServidor");
+		logger.info("Connectando ->" + getUrl);
+
+		WebResource webResource = client.resource(getUrl);
+		ClientResponse response = webResource.accept("application/json").type("application/json")
+				.post(ClientResponse.class, parameter);
 
 		logger.info("Http Status  " + response.getStatus());
 		if (response.getStatus() != 200) {
