@@ -199,8 +199,8 @@ public class App {
 			logger.info("subject=" + subject);
 			logger.info("to=" + to);
 			logger.info("template=" + template);
-			logger.info("desc=" + desc);
-			logger.info("cod=" + cod);
+			logger.info("descripcion=" + desc);
+			logger.info("codigo=" + cod);
 			logger.info("******************");
 
 			// FORMATO GET
@@ -220,8 +220,8 @@ public class App {
 			json.put("subject", subject);
 			json.put("to", to);
 			json.put("template", template);
-			json.put("desc", desc);
-			json.put("cod", cod);
+			json.put("descripcion", desc);
+			json.put("codigo", cod);
 
 			String parameter = json.toJSONString();
 
