@@ -111,6 +111,7 @@ public class App {
 			getUrl = resource + accion;
 
 			JSONObject json = new JSONObject();
+
 			json.put("to", to);
 			json.put("from", from);
 			json.put("subject", subject);
@@ -550,6 +551,8 @@ public class App {
 				logger.info("Accion=" + accion);
 				if (accion.startsWith("correocreararticulo")) {
 					accionCorreoCreacionArticulo(optAccion, args);
+				} else if (accion.startsWith("correo")) {
+					accionCorreoTexto(optAccion, args);
 				} else if (accion.startsWith("compararestructura")) {
 					accionCompararEstructura(optAccion, args);
 				} else if (accion.startsWith("importarestructura")) {
