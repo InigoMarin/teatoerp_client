@@ -22,17 +22,16 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 public class App {
-
 	static Client client = Client.create();
 
 	private static final Logger logger = Logger.getLogger("App");
 	private static final String APP_NAME = "Inteface.jar";
 
-	private static final String resource = "http://vmtc1:8083/api/";
-	private static final String resourceWeb = "http://vmtc1:8083/";
+	// private static final String resource = "http://vmtc1:8083/api/";
+	// private static final String resourceWeb = "http://vmtc1:8083/";
 
-	// private static final String resource = "http://localhost:8083/api/";
-	// private static final String resourceWeb = "http://localhost:8083/";
+	private static final String resource = "http://localhost:8083/api/";
+	private static final String resourceWeb = "http://localhost:8083/";
 
 	public static void accionCorreoTexto(Option optAccion, String[] args) {
 		logger.info("Accion Enviar correo Texto Empezar.");
@@ -99,14 +98,6 @@ public class App {
 			logger.info("body=" + body);
 			logger.info("user=" + user);
 			logger.info("******************");
-
-			// FORMATO GET
-			/*
-			 * getUrl = resource + accion + "?to=" + to + "&from=" + from + "&subject=" +
-			 * subject + "&body=" + body + "&user=" + user;
-			 * 
-			 * enviarDatosServidor(getUrl);
-			 */
 
 			getUrl = resource + accion;
 
@@ -340,8 +331,7 @@ public class App {
 			logger.info("filename=" + filename);
 			logger.info("destfilename=" + destfilename);
 			logger.info("directory=" + directory);
-
-			logger.info("******************");
+			logger.info("**********************");
 
 			UriBuilder builder = UriBuilder.fromUri(resource).path("{accion}").queryParam("filename", filename)
 					.queryParam("destfilename", destfilename).queryParam("directory", directory);
@@ -557,17 +547,15 @@ public class App {
 					accionCompararEstructura(optAccion, args);
 				} else if (accion.startsWith("importarestructura")) {
 					accionImportarEstructura(optAccion, args);
-				}
-
-				else if (accion.startsWith("tipo")) {
+				} else if (accion.startsWith("tipo")) {
 					accionTipo(optAccion, args, usuarioAudi);
 				}
 
 				else if (accion.startsWith("renombrar")) {
 					accionRenombrar(optAccion, args);
-				}
-
-				else {
+				} else if (accion.startsWith("estadover")) {
+					accionEstadoVer(optAccion, args);
+				} else {
 					accion(optAccion, args, usuarioAudi);
 				}
 
@@ -578,6 +566,58 @@ public class App {
 		} catch (ParseException e1) {
 			formatter.printHelp(APP_NAME, options);
 		}
+
+		System.exit(0);
+	}
+
+	private static void accionEstadoVer(Option optAccion, String[] args) {
+		logger.info("Accion Estado Ver Enpezar.");
+
+		HelpFormatter formatter = new HelpFormatter();
+		Options options = new Options();
+
+		Option optCodigo = Option.builder("cod").longOpt("codigo").desc("Ejemplo: cod=SCON00000").numberOfArgs(2)
+				.argName("cod").build();
+
+		options.addOption(optAccion);
+		options.addOption(optCodigo);
+
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = null;
+
+		Boolean cmdOK = false;
+		try {
+			cmd = parser.parse(options, args);
+			if (cmd.hasOption("codigo")) {
+				cmdOK = true;
+			} else {
+				formatter.printHelp(APP_NAME, options);
+			}
+		} catch (ParseException e1) {
+			formatter.printHelp(APP_NAME, options);
+		}
+
+		if (cmdOK) {
+			String accion = "estadoVer";
+			String codigo = cmd.getOptionValue("codigo").toUpperCase();
+
+			logger.info("*****PARAMETROS*******");
+			logger.info("accion=" + accion);
+			logger.info("codigo=" + codigo);
+			logger.info("**********************");
+
+			UriBuilder builder = UriBuilder.fromUri(resourceWeb).path("{accion}").path(codigo).path("comparar");
+
+			URI uri = builder.build(accion);
+
+			String getUrl = "";
+			getUrl = resource + accion + "?codigo=" + codigo;
+
+			// openURL(getUrl);
+			recogerDatosServidor(getUrl);
+
+		}
+		logger.info("Accion Comparar Estructura Finalizar.");
 
 	}
 
@@ -645,6 +685,31 @@ public class App {
 			System.out.println("Failed to start a browser to open the url " + url);
 			e.printStackTrace();
 		}
+	}
+
+	public static void recogerDatosServidor(String getUrl) {
+		logger.info("Iniciado proceso get EnviarDatosServidor");
+		logger.info("Connectando ->" + getUrl);
+		WebResource webResource = client.resource(getUrl);
+		ClientResponse response = webResource.accept("application/json").get(ClientResponse.class);
+
+		logger.info("Http Status  " + response.getStatus());
+		if (response.getStatus() != 200) {
+			throw new RuntimeException("HTTP Error: " + response.getStatus());
+		}
+
+		String result = response.getEntity(String.class);
+
+		if (result.equals("false")) {
+			String error = getUrl + " no validado.";
+			logger.severe(error);
+			throw new RuntimeException(error);
+		} else {
+			System.out.println(result);
+			logger.info(getUrl + " validado.");
+		}
+
+		System.out.println("Response from the Server: " + result);
 	}
 
 	public static void enviarDatosServidor(String getUrl) {
