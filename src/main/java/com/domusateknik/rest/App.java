@@ -27,11 +27,11 @@ public class App {
 	private static final Logger logger = Logger.getLogger("App");
 	private static final String APP_NAME = "Inteface.jar";
 
-	// private static final String resource = "http://vmtc1:8083/api/";
-	// private static final String resourceWeb = "http://vmtc1:8083/";
+	private static final String resource = "http://vmtc1:8083/api/";
+	private static final String resourceWeb = "http://vmtc1:8083/";
 
-	private static final String resource = "http://localhost:8083/api/";
-	private static final String resourceWeb = "http://localhost:8083/";
+	// private static final String resource = "http://localhost:8083/api/";
+	// private static final String resourceWeb = "http://localhost:8083/";
 
 	public static void accionCorreoTexto(Option optAccion, String[] args) {
 		logger.info("Accion Enviar correo Texto Empezar.");
@@ -284,6 +284,80 @@ public class App {
 
 		}
 		logger.info("Accion Importar Estructura Finalizar.");
+	}
+
+	public static void accionRenombrarArchivo(Option optAccion, String[] args) {
+		logger.info("Accion Renombrar Empezar.");
+		HelpFormatter formatter = new HelpFormatter();
+		Options options = new Options();
+
+		Option optFilename = Option.builder("filename").longOpt("filename").desc("Ejemplo: filename=articulo")
+				.numberOfArgs(2).argName("filename").build();
+
+		Option optDestFilename = Option.builder("destfilename").longOpt("destfilename")
+				.desc("Ejemplo: destfilename=SCOB000001").numberOfArgs(2).argName("desfilename").build();
+
+		Option optpathorigen = Option.builder("pathorigen").longOpt("pathorigen").desc("Ejemplo: pathorigen=\\atenea\\")
+				.numberOfArgs(2).argName("pathorigen").build();
+
+		Option optpathdestino = Option.builder("pathdestino").longOpt("pathdestino")
+				.desc("Ejemplo: destfilename=SCOB000001").numberOfArgs(2).argName("pathdestino").build();
+
+		Option optextension = Option.builder("extension").longOpt("extension").desc("Ejemplo: entension")
+				.numberOfArgs(2).argName("extension").build();
+
+		options.addOption(optAccion);
+		options.addOption(optFilename);
+		options.addOption(optDestFilename);
+		options.addOption(optpathorigen);
+		options.addOption(optpathdestino);
+
+		options.addOption(optextension);
+
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = null;
+
+		Boolean cmdOK = false;
+		try {
+			cmd = parser.parse(options, args);
+			if (cmd.hasOption("filename") && cmd.hasOption("destfilename") && cmd.hasOption("extension")
+					&& cmd.hasOption("pathorigen") && cmd.hasOption("pathdestino")) {
+				cmdOK = true;
+			} else {
+				formatter.printHelp(APP_NAME, options);
+			}
+		} catch (ParseException e1) {
+			formatter.printHelp(APP_NAME, options);
+		}
+
+		if (cmdOK) {
+			String accion = cmd.getOptionValue("accion").toLowerCase();
+			String filename = cmd.getOptionValue("filename").toUpperCase();
+			String destfilename = cmd.getOptionValue("destfilename").toUpperCase();
+			String pathorigen = cmd.getOptionValue("pathorigen").toUpperCase();
+			String pathdestino = cmd.getOptionValue("pathdestino").toUpperCase();
+			String extension = cmd.getOptionValue("extension").toLowerCase();
+
+			logger.info("*****PARAMETROS*******");
+			logger.info("accion=" + accion);
+			logger.info("filename=" + filename);
+			logger.info("destfilename=" + destfilename);
+			logger.info("pathorigen=" + pathorigen);
+			logger.info("pathdestino=" + pathdestino);
+			logger.info("extension=" + extension);
+			logger.info("**********************");
+
+			UriBuilder builder = UriBuilder.fromUri(resource).path("{accion}").queryParam("filename", filename)
+					.queryParam("destfilename", destfilename).queryParam("pathorigen", pathorigen)
+					.queryParam("pathdestino", pathdestino).queryParam("extension", extension);
+
+			URI uri = builder.build(accion);
+
+			enviarDatosServidor(uri.toString());
+
+		}
+		logger.info("Accion Renombrar Finalizar.");
+
 	}
 
 	public static void accionRenombrar(Option optAccion, String[] args) {
@@ -549,9 +623,9 @@ public class App {
 					accionImportarEstructura(optAccion, args);
 				} else if (accion.startsWith("tipo")) {
 					accionTipo(optAccion, args, usuarioAudi);
-				}
-
-				else if (accion.startsWith("renombrar")) {
+				} else if (accion.startsWith("renombrararchivo")) {
+					accionRenombrarArchivo(optAccion, args);
+				} else if (accion.startsWith("renombrar")) {
 					accionRenombrar(optAccion, args);
 				} else if (accion.startsWith("estadover")) {
 					accionEstadoVer(optAccion, args);
