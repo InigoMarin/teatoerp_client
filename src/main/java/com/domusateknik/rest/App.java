@@ -224,6 +224,127 @@ public class App {
 
 	}
 
+	public static void accionCorreoModificarArticulo(Option optAccion, String[] args) {
+		logger.info("Accion Enviar correo Empezar.");
+		HelpFormatter formatter = new HelpFormatter();
+		Options options = new Options();
+
+		Option optUser = Option.builder("user").longOpt("user").desc("Ejemplo: body=usuario").numberOfArgs(2)
+				.argName("user").build();
+
+		Option optFrom = Option.builder("from").longOpt("from").desc("Ejemplo: from=imarin@domusateknik.com")
+				.numberOfArgs(2).argName("from").build();
+
+		Option optSubject = Option.builder("sub").longOpt("subject").desc("Ejemplo: subject= Asunto del correo")
+				.numberOfArgs(2).argName("sub").build();
+
+		Option optTo = Option.builder("to").longOpt("to").desc("Ejemplo: to=imarin@domusateknik.com").numberOfArgs(2)
+				.argName("to").build();
+
+		Option optTemplate = Option.builder("template").longOpt("template").desc("creararticulo").numberOfArgs(2)
+				.argName("template").build();
+
+		Option optDesc = Option.builder("desc").longOpt("desc").desc("Se ha modificado").numberOfArgs(2).argName("desc")
+				.build();
+
+		Option optCod = Option.builder("cod").longOpt("cod").desc("Se ha modificado").numberOfArgs(2).argName("cod")
+				.build();
+
+		Option optItemId = Option.builder("itemid").longOpt("itemid").desc("Se ha modificado").numberOfArgs(2)
+				.argName("itemid").build();
+
+		Option optRevId = Option.builder("revid").longOpt("revid").desc("Se ha modificado").numberOfArgs(2)
+				.argName("revid").build();
+
+		options.addOption(optAccion);
+		options.addOption(optUser);
+		options.addOption(optFrom);
+		options.addOption(optSubject);
+		options.addOption(optTo);
+		options.addOption(optTemplate);
+		options.addOption(optDesc);
+		options.addOption(optCod);
+		options.addOption(optItemId);
+		options.addOption(optRevId);
+
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = null;
+		Boolean cmdOK = false;
+		try {
+			cmd = parser.parse(options, args);
+			if (cmd.hasOption("accion") && cmd.hasOption("to") && cmd.hasOption("from") && cmd.hasOption("sub")
+					&& cmd.hasOption("user") && cmd.hasOption("template") && cmd.hasOption("cod")
+					&& cmd.hasOption("revid") && cmd.hasOption("itemid")) {
+				cmdOK = true;
+
+			} else {
+				formatter.printHelp(APP_NAME, options);
+				logger.severe("Falta parametros.");
+			}
+		} catch (ParseException e1) {
+			logger.severe("Falta parametros.");
+			formatter.printHelp(APP_NAME, options);
+		}
+
+		if (cmdOK) {
+
+			String getUrl = "";
+
+			String accion = cmd.getOptionValue("accion").toLowerCase();
+			String user = cmd.getOptionValue("user");
+			String from = cmd.getOptionValue("from").toLowerCase();
+			String subject = cmd.getOptionValue("sub");
+			String to = cmd.getOptionValue("to").toLowerCase();
+			String template = cmd.getOptionValue("template");
+			String desc = cmd.getOptionValue("desc");
+			String cod = cmd.getOptionValue("cod");
+			String itemid = cmd.getOptionValue("itemid");
+			String revid = cmd.getOptionValue("revid");
+
+			logger.info("*****PARAMETROS*******");
+			logger.info("accion=" + accion);
+			logger.info("user=" + user);
+			logger.info("from=" + from);
+			logger.info("subject=" + subject);
+			logger.info("to=" + to);
+			logger.info("template=" + template);
+			logger.info("descripcion=" + desc);
+			logger.info("codigo=" + cod);
+			logger.info("itemid=" + itemid);
+			logger.info("revid=" + revid);
+			logger.info("******************");
+
+			// FORMATO GET
+			/*
+			 * getUrl = resource + accion + "?to=" + to + "&from=" + from + "&subject=" +
+			 * subject + "&body=" + body + "&user=" + user;
+			 * 
+			 * enviarDatosServidor(getUrl);
+			 */
+
+			getUrl = resource + accion;
+
+			JSONObject json = new JSONObject();
+
+			json.put("user", user);
+			json.put("from", from);
+			json.put("subject", subject);
+			json.put("to", to);
+			json.put("template", template);
+			json.put("descripcion", desc);
+			json.put("codigo", cod);
+			json.put("itemid", itemid);
+			json.put("revid", revid);
+
+			String parameter = json.toJSONString();
+
+			enviarDatosServidorPost(getUrl, parameter);
+
+		}
+		logger.info("Accion Enviar correo Finalizar.");
+
+	}
+
 	public static void accionImportarEstructura(Option optAccion, String[] args) {
 		logger.info("Accion Importar Estructura Empezar.");
 		HelpFormatter formatter = new HelpFormatter();
@@ -615,6 +736,8 @@ public class App {
 				logger.info("Accion=" + accion);
 				if (accion.startsWith("correocreararticulo")) {
 					accionCorreoCreacionArticulo(optAccion, args);
+				} else if (accion.startsWith("correomodificararticulo")) {
+					accionCorreoModificarArticulo(optAccion, args);
 				} else if (accion.startsWith("correo")) {
 					accionCorreoTexto(optAccion, args);
 				} else if (accion.startsWith("compararestructura")) {
