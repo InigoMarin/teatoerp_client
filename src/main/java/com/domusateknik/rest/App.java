@@ -250,11 +250,11 @@ public class App {
 		Option optCod = Option.builder("cod").longOpt("cod").desc("Se ha modificado").numberOfArgs(2).argName("cod")
 				.build();
 
-		Option optItemId = Option.builder("itemid").longOpt("itemid").desc("Se ha modificado").numberOfArgs(2)
-				.argName("itemid").build();
+		Option optItemId = Option.builder("itemId").longOpt("itemId").desc("Se ha modificado").numberOfArgs(2)
+				.argName("itemId").build();
 
-		Option optRevId = Option.builder("revid").longOpt("revid").desc("Se ha modificado").numberOfArgs(2)
-				.argName("revid").build();
+		Option optRevId = Option.builder("revId").longOpt("revId").desc("Se ha modificado").numberOfArgs(2)
+				.argName("revId").build();
 
 		options.addOption(optAccion);
 		options.addOption(optUser);
@@ -274,7 +274,7 @@ public class App {
 			cmd = parser.parse(options, args);
 			if (cmd.hasOption("accion") && cmd.hasOption("to") && cmd.hasOption("from") && cmd.hasOption("sub")
 					&& cmd.hasOption("user") && cmd.hasOption("template") && cmd.hasOption("cod")
-					&& cmd.hasOption("revid") && cmd.hasOption("itemid")) {
+					&& cmd.hasOption("revId") && cmd.hasOption("itemId")) {
 				cmdOK = true;
 
 			} else {
@@ -298,8 +298,8 @@ public class App {
 			String template = cmd.getOptionValue("template");
 			String desc = cmd.getOptionValue("desc");
 			String cod = cmd.getOptionValue("cod");
-			String itemid = cmd.getOptionValue("itemid");
-			String revid = cmd.getOptionValue("revid");
+			String itemid = cmd.getOptionValue("itemId");
+			String revid = cmd.getOptionValue("revId");
 
 			logger.info("*****PARAMETROS*******");
 			logger.info("accion=" + accion);
@@ -331,10 +331,10 @@ public class App {
 			json.put("subject", subject);
 			json.put("to", to);
 			json.put("template", template);
-			json.put("descripcion", desc);
+			json.put("desc", desc);
 			json.put("codigo", cod);
-			json.put("itemid", itemid);
-			json.put("revid", revid);
+			json.put("itemId", itemid);
+			json.put("revId", revid);
 
 			String parameter = json.toJSONString();
 
@@ -731,7 +731,6 @@ public class App {
 			cmd = parser.parse(options, args, true);
 
 			if (cmd.hasOption("accion")) {
-
 				String accion = cmd.getOptionValue("accion").toLowerCase();
 				logger.info("Accion=" + accion);
 				if (accion.startsWith("correocreararticulo")) {
@@ -752,6 +751,8 @@ public class App {
 					accionRenombrar(optAccion, args);
 				} else if (accion.startsWith("estadover")) {
 					accionEstadoVer(optAccion, args);
+				} else if (accion.startsWith("estadocomprobar")) {
+					accionEstadoComprobar(optAccion, args);
 				} else {
 					accion(optAccion, args, usuarioAudi);
 				}
@@ -809,6 +810,68 @@ public class App {
 
 			String getUrl = "";
 			getUrl = resource + accion + "?codigo=" + codigo;
+
+			// openURL(getUrl);
+			recogerDatosServidor(getUrl);
+
+		}
+		logger.info("Accion Comparar Estructura Finalizar.");
+
+	}
+
+	private static void accionEstadoComprobar(Option optAccion, String[] args) {
+		logger.info("Accion Estado Ver Enpezar.");
+
+		HelpFormatter formatter = new HelpFormatter();
+		Options options = new Options();
+
+		Option optCodigo = Option.builder("cod").longOpt("codigo").desc("Ejemplo: cod=SCON00000").numberOfArgs(2)
+				.argName("cod").build();
+
+		Option optEstado = Option.builder("estado").longOpt("estado").desc("Ejemplo: estado=validar").numberOfArgs(2)
+				.argName("estado").build();
+
+		Option optUsuario = Option.builder("usuario").longOpt("usuario").desc("Ejemplo: usuario=Gurutze Agirre GAG")
+				.numberOfArgs(2).argName("usuario").build();
+
+		options.addOption(optAccion);
+		options.addOption(optCodigo);
+		options.addOption(optEstado);
+		options.addOption(optUsuario);
+
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = null;
+
+		Boolean cmdOK = false;
+		try {
+			cmd = parser.parse(options, args);
+			if (cmd.hasOption("codigo") && cmd.hasOption("estado")) {
+				cmdOK = true;
+			} else {
+				formatter.printHelp(APP_NAME, options);
+			}
+		} catch (ParseException e1) {
+			formatter.printHelp(APP_NAME, options);
+		}
+
+		if (cmdOK) {
+			String accion = "estadoComprobar";
+			String codigo = cmd.getOptionValue("codigo").toUpperCase();
+			String estado = cmd.getOptionValue("estado").toUpperCase();
+
+			logger.info("*****PARAMETROS*******");
+			logger.info("accion=" + accion);
+			logger.info("codigo=" + codigo);
+			logger.info("estado=" + estado);
+
+			logger.info("**********************");
+
+			UriBuilder builder = UriBuilder.fromUri(resourceWeb).path("{accion}").path(codigo).path("comparar");
+
+			URI uri = builder.build(accion);
+
+			String getUrl = "";
+			getUrl = resource + accion + "?codigo=" + codigo + "&estado=" + estado;
 
 			// openURL(getUrl);
 			recogerDatosServidor(getUrl);
