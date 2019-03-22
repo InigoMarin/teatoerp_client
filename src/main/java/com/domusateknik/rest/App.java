@@ -144,6 +144,9 @@ public class App {
 		Option optCod = Option.builder("cod").longOpt("cod").desc("Se ha modificado").numberOfArgs(2).argName("cod")
 				.build();
 
+		Option optEan13 = Option.builder("ean13").longOpt("ean13").desc("Se ha modificado").numberOfArgs(2)
+				.argName("ean13").build();
+
 		options.addOption(optAccion);
 		options.addOption(optUser);
 		options.addOption(optFrom);
@@ -152,6 +155,7 @@ public class App {
 		options.addOption(optTemplate);
 		options.addOption(optDesc);
 		options.addOption(optCod);
+		options.addOption(optEan13);
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = null;
@@ -183,6 +187,7 @@ public class App {
 			String template = cmd.getOptionValue("template");
 			String desc = cmd.getOptionValue("desc");
 			String cod = cmd.getOptionValue("cod");
+			String ean13 = cmd.getOptionValue("ean13");
 
 			logger.info("*****PARAMETROS*******");
 			logger.info("accion=" + accion);
@@ -193,6 +198,7 @@ public class App {
 			logger.info("template=" + template);
 			logger.info("descripcion=" + desc);
 			logger.info("codigo=" + cod);
+			logger.info("ean13=" + ean13);
 			logger.info("******************");
 
 			// FORMATO GET
@@ -214,6 +220,7 @@ public class App {
 			json.put("template", template);
 			json.put("descripcion", desc);
 			json.put("codigo", cod);
+			json.put("ean13", ean13);
 
 			String parameter = json.toJSONString();
 
