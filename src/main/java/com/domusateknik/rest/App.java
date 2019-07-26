@@ -762,7 +762,13 @@ public class App {
 					accionEstadoComprobar(optAccion, args);
 				} else if (accion.startsWith("crearplano")) {
 					acccionCrearPlano(optAccion, args);
-				} else {
+				} else if (accion.startsWith("crearitra")) {
+					acccionCrearItra(optAccion, args);
+				} else if (accion.startsWith("estructuraITRA")) {
+					acccionEstructuraItra(optAccion, args);
+				}
+
+				else {
 					accion(optAccion, args, usuarioAudi);
 				}
 
@@ -844,6 +850,138 @@ public class App {
 
 		}
 		logger.info("Accion Crear Plano Finalizar.");
+	}
+
+	private static void acccionCrearItra(Option optAccion, String[] args) {
+
+		logger.info("Accion Crear Itra Iniciar.");
+
+		HelpFormatter formatter = new HelpFormatter();
+		Options options = new Options();
+
+		Option optCodigo = Option.builder("cod").longOpt("codigo").desc("Ejemplo: cod=SCON00000").numberOfArgs(2)
+				.argName("cod").build();
+
+		Option optTipoDocumento = Option.builder("tipodocumento").longOpt("tipodocumento")
+				.desc("Ejemplo: tipodocumento=01").numberOfArgs(2).argName("tipodocumento").build();
+
+		Option optruta = Option.builder("ruta").longOpt("ruta").desc("Ejemplo: ruta=").numberOfArgs(2).argName("ruta")
+				.build();
+
+		Option optUsuario = Option.builder("usuario").longOpt("usuario").desc("Ejemplo: usuario=Gurutze Agirre GAG")
+				.numberOfArgs(2).argName("usuario").build();
+
+		options.addOption(optAccion);
+		options.addOption(optCodigo);
+		options.addOption(optTipoDocumento);
+		options.addOption(optruta);
+		options.addOption(optUsuario);
+
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = null;
+
+		Boolean cmdOK = false;
+		try {
+			cmd = parser.parse(options, args);
+			if (cmd.hasOption("codigo") && cmd.hasOption("tipodocumento") && cmd.hasOption("ruta")) {
+				cmdOK = true;
+			} else {
+				formatter.printHelp(APP_NAME, options);
+			}
+		} catch (ParseException e1) {
+			formatter.printHelp(APP_NAME, options);
+		}
+
+		if (cmdOK) {
+			String accion = "documentoplano";
+			String codigo = cmd.getOptionValue("codigo").toUpperCase();
+			String tipodocumento = cmd.getOptionValue("tipodocumento");
+			String ruta = cmd.getOptionValue("ruta");
+			String usuario = cmd.getOptionValue("usuario");
+
+			logger.info("*****PARAMETROS*******");
+			logger.info("accion=" + accion);
+			logger.info("codigo=" + codigo);
+			logger.info("tipodocumento=" + tipodocumento);
+			logger.info("ruta=" + ruta);
+			logger.info("usuario=" + usuario);
+			logger.info("**********************");
+
+			String getUrl = "";
+
+			UriBuilder builder = UriBuilder.fromUri(resource).path("{accion}").queryParam("file", codigo)
+					.queryParam("tipoDocumento", tipodocumento).queryParam("ruta", ruta).queryParam("usuario", usuario);
+
+			URI uri = builder.build(accion);
+
+			// openURL(getUrl);
+			recogerDatosServidor(uri.toString());
+
+		}
+		logger.info("Accion Crear Itra Finalizar.");
+	}
+
+	private static void acccionEstructuraItra(Option optAccion, String[] args) {
+
+		logger.info("Accion EstructuraItra Iniciar.");
+
+		HelpFormatter formatter = new HelpFormatter();
+		Options options = new Options();
+
+		Option optCodigo = Option.builder("cod").longOpt("codigo").desc("Ejemplo: cod=SCON00000").numberOfArgs(2)
+				.argName("cod").build();
+
+		Option optTipoDocumento = Option.builder("tipodocumento").longOpt("tipodocumento")
+				.desc("Ejemplo: tipodocumento=01").numberOfArgs(2).argName("tipodocumento").build();
+
+		Option optUsuario = Option.builder("usuario").longOpt("usuario").desc("Ejemplo: usuario=Gurutze Agirre GAG")
+				.numberOfArgs(2).argName("usuario").build();
+
+		options.addOption(optAccion);
+		options.addOption(optCodigo);
+		options.addOption(optTipoDocumento);
+		options.addOption(optUsuario);
+
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = null;
+
+		Boolean cmdOK = false;
+		try {
+			cmd = parser.parse(options, args);
+			if (cmd.hasOption("codigo") && cmd.hasOption("tipodocumento") && cmd.hasOption("ruta")) {
+				cmdOK = true;
+			} else {
+				formatter.printHelp(APP_NAME, options);
+			}
+		} catch (ParseException e1) {
+			formatter.printHelp(APP_NAME, options);
+		}
+
+		if (cmdOK) {
+			String accion = "documentorelacionar";
+			String codigo = cmd.getOptionValue("codigo").toUpperCase();
+			String tipodocumento = cmd.getOptionValue("tipodocumento");
+			String usuario = cmd.getOptionValue("usuario");
+
+			logger.info("*****PARAMETROS*******");
+			logger.info("accion=" + accion);
+			logger.info("codigo=" + codigo);
+			logger.info("tipodocumento=" + tipodocumento);
+			logger.info("usuario=" + usuario);
+			logger.info("**********************");
+
+			String getUrl = "";
+
+			UriBuilder builder = UriBuilder.fromUri(resource).path("{accion}").queryParam("file", codigo)
+					.queryParam("tipoDocumento", tipodocumento).queryParam("usuario", usuario);
+
+			URI uri = builder.build(accion);
+
+			// openURL(getUrl);
+			recogerDatosServidor(uri.toString());
+
+		}
+		logger.info("Accion EstructuraItra Finalizar.");
 	}
 
 	private static void accionEstadoVer(Option optAccion, String[] args) {
