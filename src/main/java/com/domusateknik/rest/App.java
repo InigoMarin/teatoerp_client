@@ -764,8 +764,10 @@ public class App {
 					acccionCrearPlano(optAccion, args);
 				} else if (accion.startsWith("crearitra")) {
 					acccionCrearItra(optAccion, args);
-				} else if (accion.startsWith("estructuraITRA")) {
+				} else if (accion.startsWith("estructuraitra")) {
 					acccionEstructuraItra(optAccion, args);
+				} else if (accion.startsWith("documentoborrar")) {
+					acccionDocumentoBorrar(optAccion, args);
 				}
 
 				else {
@@ -781,6 +783,64 @@ public class App {
 		}
 
 		System.exit(0);
+	}
+
+	private static void acccionDocumentoBorrar(Option optAccion, String[] args) {
+
+		logger.info("Accion DocumentoBorrar Iniciar.");
+
+		HelpFormatter formatter = new HelpFormatter();
+		Options options = new Options();
+
+		Option optCodigo = Option.builder("cod").longOpt("codigo").desc("Ejemplo: cod=SCON00000").numberOfArgs(2)
+				.argName("cod").build();
+
+		Option optUsuario = Option.builder("usuario").longOpt("usuario").desc("Ejemplo: usuario=Gurutze Agirre GAG")
+				.numberOfArgs(2).argName("usuario").build();
+
+		options.addOption(optAccion);
+		options.addOption(optCodigo);
+		options.addOption(optUsuario);
+
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = null;
+
+		Boolean cmdOK = false;
+		try {
+			cmd = parser.parse(options, args);
+			if (cmd.hasOption("codigo")) {
+				cmdOK = true;
+			} else {
+				formatter.printHelp(APP_NAME, options);
+			}
+		} catch (ParseException e1) {
+			formatter.printHelp(APP_NAME, options);
+		}
+
+		if (cmdOK) {
+			String accion = "documentoborrar";
+			String codigo = cmd.getOptionValue("codigo").toUpperCase();
+			String usuario = cmd.getOptionValue("usuario");
+
+			logger.info("*****PARAMETROS*******");
+			logger.info("accion=" + accion);
+			logger.info("codigo=" + codigo);
+			logger.info("usuario=" + usuario);
+			logger.info("**********************");
+
+			String getUrl = "";
+
+			UriBuilder builder = UriBuilder.fromUri(resource).path("{accion}").queryParam("file", codigo)
+					.queryParam("usuario", usuario);
+
+			URI uri = builder.build(accion);
+
+			// openURL(getUrl);
+			recogerDatosServidor(uri.toString());
+
+		}
+		logger.info("Accion Documento Borrar Finalizar.");
+
 	}
 
 	private static void acccionCrearPlano(Option optAccion, String[] args) {
@@ -948,7 +1008,7 @@ public class App {
 		Boolean cmdOK = false;
 		try {
 			cmd = parser.parse(options, args);
-			if (cmd.hasOption("codigo") && cmd.hasOption("tipodocumento") && cmd.hasOption("ruta")) {
+			if (cmd.hasOption("codigo") && cmd.hasOption("tipodocumento")) {
 				cmdOK = true;
 			} else {
 				formatter.printHelp(APP_NAME, options);
