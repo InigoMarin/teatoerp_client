@@ -488,6 +488,66 @@ public class App {
 
 	}
 
+	public static void accionSbolPdf(Option optAccion, String[] args) {
+		logger.info("Accion sboldpf Empezar.");
+		HelpFormatter formatter = new HelpFormatter();
+		Options options = new Options();
+
+		Option optDestFilename = Option.builder("destfilename").longOpt("destfilename")
+				.desc("Ejemplo: destfilename=SCOB000001").numberOfArgs(2).argName("desfilename").build();
+
+		Option optpathdestino = Option.builder("pathdestino").longOpt("pathdestino")
+				.desc("Ejemplo: destfilename=SCOB000001").numberOfArgs(2).argName("pathdestino").build();
+
+		Option optextension = Option.builder("extension").longOpt("extension").desc("Ejemplo: entension")
+				.numberOfArgs(2).argName("extension").build();
+
+		options.addOption(optAccion);
+		options.addOption(optDestFilename);
+		options.addOption(optpathdestino);
+
+		options.addOption(optextension);
+
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = null;
+
+		Boolean cmdOK = false;
+		try {
+			cmd = parser.parse(options, args);
+			if (cmd.hasOption("destfilename") && cmd.hasOption("extension") && cmd.hasOption("pathdestino")) {
+				cmdOK = true;
+			} else {
+				formatter.printHelp(APP_NAME, options);
+			}
+		} catch (ParseException e1) {
+			formatter.printHelp(APP_NAME, options);
+		}
+
+		if (cmdOK) {
+			String accion = cmd.getOptionValue("accion").toLowerCase();
+			String destfilename = cmd.getOptionValue("destfilename").toUpperCase();
+			String pathdestino = cmd.getOptionValue("pathdestino").toUpperCase();
+			String extension = cmd.getOptionValue("extension").toLowerCase();
+
+			logger.info("*****PARAMETROS*******");
+			logger.info("accion=" + accion);
+			logger.info("destfilename=" + destfilename);
+			logger.info("pathdestino=" + pathdestino);
+			logger.info("extension=" + extension);
+			logger.info("**********************");
+
+			UriBuilder builder = UriBuilder.fromUri(resource).path("{accion}").queryParam("destfilename", destfilename)
+					.queryParam("pathdestino", pathdestino).queryParam("extension", extension);
+
+			URI uri = builder.build(accion);
+
+			enviarDatosServidor(uri.toString());
+
+		}
+		logger.info("Accion sbolpdf Finalizar.");
+
+	}
+
 	public static void accionRenombrar(Option optAccion, String[] args) {
 		logger.info("Accion Renombrar Empezar.");
 		HelpFormatter formatter = new HelpFormatter();
@@ -768,9 +828,9 @@ public class App {
 					acccionEstructuraItra(optAccion, args);
 				} else if (accion.startsWith("documentoborrar")) {
 					acccionDocumentoBorrar(optAccion, args);
-				}
-
-				else {
+				} else if (accion.startsWith("sbolpdf")) {
+					accionSbolPdf(optAccion, args);
+				} else {
 					accion(optAccion, args, usuarioAudi);
 				}
 
