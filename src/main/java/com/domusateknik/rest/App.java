@@ -53,12 +53,25 @@ public class App {
 		Option optBody = Option.builder("body").longOpt("body").desc("Ejemplo: body=mail.html o texto").numberOfArgs(2)
 				.argName("body").build();
 
+		Option optlinea1 = Option.builder("linea1").longOpt("linea1").desc("Ejemplo: body=mail.html o texto")
+				.numberOfArgs(2).argName("linea1").build();
+
+		Option optlinea2 = Option.builder("linea2").longOpt("linea2").desc("Ejemplo: body=mail.html o texto")
+				.numberOfArgs(2).argName("linea2").build();
+
+		Option optlinea3 = Option.builder("linea3").longOpt("linea3").desc("Ejemplo: body=mail.html o texto")
+				.numberOfArgs(2).argName("linea3").build();
+
 		options.addOption(optAccion);
 		options.addOption(optTo);
 		options.addOption(optFrom);
 		options.addOption(optSubject);
 		options.addOption(optUser);
 		options.addOption(optBody);
+
+		options.addOption(optlinea1);
+		options.addOption(optlinea2);
+		options.addOption(optlinea3);
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = null;
@@ -89,6 +102,9 @@ public class App {
 			String subject = cmd.getOptionValue("sub");
 			String body = cmd.getOptionValue("body");
 			String user = cmd.getOptionValue("user");
+			String linea1 = cmd.getOptionValue("linea1");
+			String linea2 = cmd.getOptionValue("linea2");
+			String linea3 = cmd.getOptionValue("linea3");
 
 			logger.info("*****PARAMETROS*******");
 			logger.info("accion=" + accion);
@@ -97,6 +113,9 @@ public class App {
 			logger.info("subject=" + subject);
 			logger.info("body=" + body);
 			logger.info("user=" + user);
+			logger.info("linea1=" + linea1);
+			logger.info("linea2=" + linea2);
+			logger.info("linea3=" + linea3);
 			logger.info("******************");
 
 			getUrl = resource + accion;
@@ -108,6 +127,9 @@ public class App {
 			json.put("subject", subject);
 			json.put("body", body);
 			json.put("user", user);
+			json.put("linea1", linea1);
+			json.put("linea2", linea2);
+			json.put("linea3", linea3);
 
 			String parameter = json.toJSONString();
 
