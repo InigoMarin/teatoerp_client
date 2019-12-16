@@ -62,6 +62,45 @@ public class App {
 		Option optlinea3 = Option.builder("linea3").longOpt("linea3").desc("Ejemplo: body=mail.html o texto")
 				.numberOfArgs(2).argName("linea3").build();
 
+		Option optlinea4 = Option.builder("linea4").longOpt("linea4").desc("Ejemplo: body=mail.html o texto")
+				.numberOfArgs(2).argName("linea4").build();
+
+		Option optlinea5 = Option.builder("linea5").longOpt("linea5").desc("Ejemplo: body=mail.html o texto")
+				.numberOfArgs(2).argName("linea5").build();
+
+		Option optCondicionExiste = Option.builder("condExiste").longOpt("condExiste").desc("Ejemplo: true o false")
+				.numberOfArgs(2).argName("condExiste").build();
+
+		Option optCondicionItemRevision = Option.builder("condItemRevision").longOpt("condItemRevision")
+				.desc("Ejemplo: true o false").numberOfArgs(2).argName("condItemRevision").build();
+
+		Option optCondicionEan13 = Option.builder("condEan13").longOpt("condEan13").desc("Ejemplo: true o false")
+				.numberOfArgs(2).argName("condEan13").build();
+
+		Option optCod = Option.builder("cod").longOpt("cod").desc("Ejemplo: true o false").numberOfArgs(2)
+				.argName("cod").build();
+
+		Option optDesc = Option.builder("desc").longOpt("desc").desc("Ejemplo: true o false").numberOfArgs(2)
+				.argName("desc").build();
+
+		Option optCant = Option.builder("cant").longOpt("cant").desc("Ejemplo:1").numberOfArgs(2).argName("cant")
+				.build();
+
+		Option optnp = Option.builder("np").longOpt("np").desc("Ejemplo:Nota general").numberOfArgs(2).argName("np")
+				.build();
+
+		Option optng = Option.builder("ng").longOpt("ng").desc("Ejemplo:Nota particular").numberOfArgs(2).argName("ng")
+				.build();
+
+		Option optrevid = Option.builder("revId").longOpt("revId").desc("Ejemplo:Nota particular").numberOfArgs(2)
+				.argName("revId").build();
+
+		Option optitemid = Option.builder("itemId").longOpt("itemId").desc("Ejemplo:Nota particular").numberOfArgs(2)
+				.argName("itemId").build();
+
+		Option optean13 = Option.builder("ean13").longOpt("ean13").desc("Ejemplo:Nota particular").numberOfArgs(2)
+				.argName("ean13").build();
+
 		options.addOption(optAccion);
 		options.addOption(optTo);
 		options.addOption(optFrom);
@@ -72,6 +111,21 @@ public class App {
 		options.addOption(optlinea1);
 		options.addOption(optlinea2);
 		options.addOption(optlinea3);
+		options.addOption(optlinea4);
+		options.addOption(optlinea5);
+
+		options.addOption(optCondicionExiste);
+		options.addOption(optCondicionItemRevision);
+		options.addOption(optCondicionEan13);
+
+		options.addOption(optCod);
+		options.addOption(optDesc);
+		options.addOption(optCant);
+		options.addOption(optnp);
+		options.addOption(optng);
+		options.addOption(optitemid);
+		options.addOption(optrevid);
+		options.addOption(optean13);
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = null;
@@ -105,6 +159,55 @@ public class App {
 			String linea1 = cmd.getOptionValue("linea1");
 			String linea2 = cmd.getOptionValue("linea2");
 			String linea3 = cmd.getOptionValue("linea3");
+			String linea4 = cmd.getOptionValue("linea4");
+			String linea5 = cmd.getOptionValue("linea5");
+			String cod = cmd.getOptionValue("cod");
+			String desc = cmd.getOptionValue("desc");
+			String cant = cmd.getOptionValue("cant");
+			String np = cmd.getOptionValue("np");
+			String ng = cmd.getOptionValue("ng");
+			String itemid = cmd.getOptionValue("itemid");
+			String revid = cmd.getOptionValue("revid");
+			String ean13 = cmd.getOptionValue("ean13");
+
+			Boolean condicionExiste = false;
+			try {
+				String condExiste = cmd.getOptionValue("condExiste").toUpperCase();
+
+				if (condExiste == null || condExiste.equals("FALSO")) {
+					condicionExiste = false;
+				} else {
+					condicionExiste = true;
+				}
+			} catch (Exception e) {
+				condicionExiste = false;
+			}
+
+			Boolean condicionItemRevision = false;
+			try {
+				String condItemRevision = cmd.getOptionValue("condItemRevision").toUpperCase();
+
+				if (condItemRevision == null || condItemRevision.equals("FALSO")) {
+					condicionItemRevision = false;
+				} else {
+					condicionItemRevision = true;
+				}
+			} catch (Exception e) {
+				condicionItemRevision = false;
+			}
+
+			Boolean condicionEan13 = false;
+			try {
+				String condEan13 = cmd.getOptionValue("condEan13").toUpperCase();
+
+				if (condEan13 == null || condEan13.equals("FALSO")) {
+					condicionEan13 = false;
+				} else {
+					condicionEan13 = true;
+				}
+			} catch (Exception e) {
+				condicionEan13 = false;
+			}
 
 			logger.info("*****PARAMETROS*******");
 			logger.info("accion=" + accion);
@@ -116,6 +219,19 @@ public class App {
 			logger.info("linea1=" + linea1);
 			logger.info("linea2=" + linea2);
 			logger.info("linea3=" + linea3);
+			logger.info("linea4=" + linea4);
+			logger.info("linea5=" + linea5);
+			logger.info("condExiste=" + condicionExiste);
+			logger.info("condEan13=" + condicionEan13);
+			logger.info("condItemrevision=" + condicionItemRevision);
+			logger.info("cod=" + cod);
+			logger.info("desc=" + desc);
+			logger.info("cant=" + cant);
+			logger.info("np=" + np);
+			logger.info("ng=" + ng);
+			logger.info("revid=" + revid);
+			logger.info("itemid=" + itemid);
+			logger.info("ean13=" + ean13);
 			logger.info("******************");
 
 			getUrl = resource + accion;
@@ -130,6 +246,248 @@ public class App {
 			json.put("linea1", linea1);
 			json.put("linea2", linea2);
 			json.put("linea3", linea3);
+			json.put("linea4", linea4);
+			json.put("linea5", linea5);
+			json.put("condicionExiste", condicionExiste);
+			json.put("condicionItemRevision", condicionItemRevision);
+			json.put("condicionEan13", condicionEan13);
+
+			json.put("codigo", cod);
+			json.put("descripcion", desc);
+			json.put("cantidad", cant);
+			json.put("notaparticular", np);
+			json.put("notageneral", ng);
+			json.put("revId", revid);
+			json.put("itemId", itemid);
+			json.put("ean13", ean13);
+
+			String parameter = json.toJSONString();
+
+			enviarDatosServidorPost(getUrl, parameter);
+
+		}
+		logger.info("Accion Enviar correo Texto Finalizar.");
+
+	}
+
+	public static void accionCorreoPlantillaCondicion(Option optAccion, String[] args) {
+		logger.info("Accion Enviar correo Texto Empezar.");
+		HelpFormatter formatter = new HelpFormatter();
+		Options options = new Options();
+
+		Option optTo = Option.builder("to").longOpt("to").desc("Ejemplo: to=imarin@domusateknik.com").numberOfArgs(2)
+				.argName("to").build();
+
+		Option optFrom = Option.builder("from").longOpt("from").desc("Ejemplo: from=imarin@domusateknik.com")
+				.numberOfArgs(2).argName("from").build();
+
+		Option optSubject = Option.builder("sub").longOpt("subject").desc("Ejemplo: subject= Asunto del correo")
+				.numberOfArgs(2).argName("sub").build();
+
+		Option optUser = Option.builder("user").longOpt("user").desc("Ejemplo: body=usuario").numberOfArgs(2)
+				.argName("user").build();
+
+		Option optBody = Option.builder("body").longOpt("body").desc("Ejemplo: body=mail.html o texto").numberOfArgs(2)
+				.argName("body").build();
+
+		Option optlinea1 = Option.builder("linea1").longOpt("linea1").desc("Ejemplo: body=mail.html o texto")
+				.numberOfArgs(2).argName("linea1").build();
+
+		Option optlinea2 = Option.builder("linea2").longOpt("linea2").desc("Ejemplo: body=mail.html o texto")
+				.numberOfArgs(2).argName("linea2").build();
+
+		Option optlinea3 = Option.builder("linea3").longOpt("linea3").desc("Ejemplo: body=mail.html o texto")
+				.numberOfArgs(2).argName("linea3").build();
+
+		Option optlinea4 = Option.builder("linea4").longOpt("linea4").desc("Ejemplo: body=mail.html o texto")
+				.numberOfArgs(2).argName("linea4").build();
+
+		Option optlinea5 = Option.builder("linea5").longOpt("linea5").desc("Ejemplo: body=mail.html o texto")
+				.numberOfArgs(2).argName("linea5").build();
+
+		Option optCondicionExiste = Option.builder("condExiste").longOpt("condExiste").desc("Ejemplo: true o false")
+				.numberOfArgs(2).argName("condExiste").build();
+
+		Option optCondicionItemRevision = Option.builder("condItemRevision").longOpt("condItemRevision")
+				.desc("Ejemplo: true o false").numberOfArgs(2).argName("condItemRevision").build();
+
+		Option optCondicionEan13 = Option.builder("condEan13").longOpt("condEan13").desc("Ejemplo: true o false")
+				.numberOfArgs(2).argName("condEan13").build();
+
+		Option optTemplate = Option.builder("templage").longOpt("template").desc("Ejemplo: true o false")
+				.numberOfArgs(2).argName("template").build();
+
+		Option optCod = Option.builder("cod").longOpt("cod").desc("Ejemplo: true o false").numberOfArgs(2)
+				.argName("cod").build();
+
+		Option optDesc = Option.builder("desc").longOpt("desc").desc("Ejemplo: true o false").numberOfArgs(2)
+				.argName("desc").build();
+
+		Option optCant = Option.builder("cant").longOpt("cant").desc("Ejemplo:1").numberOfArgs(2).argName("cant")
+				.build();
+
+		Option optnp = Option.builder("np").longOpt("np").desc("Ejemplo:Nota general").numberOfArgs(2).argName("np")
+				.build();
+
+		Option optng = Option.builder("ng").longOpt("ng").desc("Ejemplo:Nota particular").numberOfArgs(2).argName("ng")
+				.build();
+
+		Option optrevid = Option.builder("revid").longOpt("revid").desc("Ejemplo:Nota particular").numberOfArgs(2)
+				.argName("revid").build();
+
+		Option optitemid = Option.builder("itemid").longOpt("itemid").desc("Ejemplo:Nota particular").numberOfArgs(2)
+				.argName("itemid").build();
+
+		Option optean13 = Option.builder("ean13").longOpt("ean13").desc("Ejemplo:Nota particular").numberOfArgs(2)
+				.argName("ean13").build();
+
+		options.addOption(optAccion);
+		options.addOption(optTo);
+		options.addOption(optFrom);
+		options.addOption(optSubject);
+		options.addOption(optUser);
+		options.addOption(optBody);
+
+		options.addOption(optlinea1);
+		options.addOption(optlinea2);
+		options.addOption(optlinea3);
+		options.addOption(optlinea4);
+		options.addOption(optlinea5);
+
+		options.addOption(optCondicionExiste);
+		options.addOption(optCondicionItemRevision);
+		options.addOption(optCondicionEan13);
+		options.addOption(optTemplate);
+		options.addOption(optCod);
+		options.addOption(optDesc);
+		options.addOption(optCant);
+		options.addOption(optnp);
+		options.addOption(optng);
+		options.addOption(optrevid);
+		options.addOption(optitemid);
+		options.addOption(optean13);
+
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = null;
+		Boolean cmdOK = false;
+		try {
+			cmd = parser.parse(options, args);
+			if (cmd.hasOption("accion") && cmd.hasOption("to") && cmd.hasOption("from") && cmd.hasOption("sub")
+					&& cmd.hasOption("user") && cmd.hasOption("body") && cmd.hasOption("template")) {
+				cmdOK = true;
+
+			} else {
+				formatter.printHelp(APP_NAME, options);
+				logger.severe("Falta parametros.");
+			}
+		} catch (ParseException e1) {
+			logger.severe("Falta parametros.");
+			formatter.printHelp(APP_NAME, options);
+		}
+
+		if (cmdOK) {
+
+			String getUrl = "";
+
+			String accion = cmd.getOptionValue("accion").toLowerCase();
+			String to = cmd.getOptionValue("to").toLowerCase();
+			String from = cmd.getOptionValue("from").toLowerCase();
+
+			String subject = cmd.getOptionValue("sub");
+			String body = cmd.getOptionValue("body");
+			String user = cmd.getOptionValue("user");
+			String linea1 = cmd.getOptionValue("linea1");
+			String linea2 = cmd.getOptionValue("linea2");
+			String linea3 = cmd.getOptionValue("linea3");
+			String linea4 = cmd.getOptionValue("linea4");
+			String linea5 = cmd.getOptionValue("linea5");
+			String template = cmd.getOptionValue("template");
+			String cod = cmd.getOptionValue("cod");
+			String desc = cmd.getOptionValue("desc");
+			String cant = cmd.getOptionValue("cant");
+			String np = cmd.getOptionValue("np");
+			String ng = cmd.getOptionValue("ng");
+			String itemid = cmd.getOptionValue("itemid");
+			String revid = cmd.getOptionValue("revid");
+			String ean13 = cmd.getOptionValue("ean13");
+
+			String condExiste = cmd.getOptionValue("condExiste").toUpperCase();
+			Boolean condicionExiste = false;
+			if (condExiste == null || condExiste.equals("FALSO")) {
+				condicionExiste = false;
+			} else {
+				condicionExiste = true;
+			}
+
+			String condItemRevision = cmd.getOptionValue("condItemRevision").toUpperCase();
+			Boolean condicionItemRevision = false;
+			if (condicionItemRevision == null || condicionItemRevision.equals("FALSO")) {
+				condicionItemRevision = false;
+			} else {
+				condicionItemRevision = true;
+			}
+
+			String condEan13 = cmd.getOptionValue("condEan13").toUpperCase();
+			Boolean condicionEan13 = false;
+			if (condicionEan13 == null || condicionEan13.equals("FALSO")) {
+				condicionEan13 = false;
+			} else {
+				condicionEan13 = true;
+			}
+
+			logger.info("*****PARAMETROS*******");
+			logger.info("accion=" + accion);
+			logger.info("to=" + to);
+			logger.info("from=" + from);
+			logger.info("subject=" + subject);
+			logger.info("body=" + body);
+			logger.info("user=" + user);
+			logger.info("linea1=" + linea1);
+			logger.info("linea2=" + linea2);
+			logger.info("linea3=" + linea3);
+			logger.info("linea4=" + linea4);
+			logger.info("linea5=" + linea5);
+			logger.info("condExiste=" + condExiste);
+			logger.info("condEan13=" + condEan13);
+			logger.info("condItemRevision=" + condItemRevision);
+			logger.info("template=" + template);
+			logger.info("cod=" + cod);
+			logger.info("desc=" + desc);
+			logger.info("cant=" + cant);
+			logger.info("np=" + np);
+			logger.info("ng=" + ng);
+			logger.info("revid=" + revid);
+			logger.info("itemid=" + itemid);
+			logger.info("ean13=" + ean13);
+			logger.info("******************");
+
+			getUrl = resource + accion;
+
+			JSONObject json = new JSONObject();
+
+			json.put("to", to);
+			json.put("from", from);
+			json.put("subject", subject);
+			json.put("body", body);
+			json.put("user", user);
+
+			json.put("linea1", linea1);
+			json.put("linea2", linea2);
+			json.put("linea3", linea3);
+			json.put("linea4", linea4);
+			json.put("linea5", linea5);
+
+			json.put("condicionExiste", condicionExiste);
+			json.put("condicionItemRevision", condicionItemRevision);
+			json.put("condicionEan13", condicionEan13);
+			json.put("codigo", cod);
+			json.put("descripcion", desc);
+			json.put("cantidad", cant);
+			json.put("notaparticular", np);
+			json.put("notageneral", ng);
+			json.put("revId", revid);
+			json.put("itemId", itemid);
+			json.put("ean13", ean13);
 
 			String parameter = json.toJSONString();
 
@@ -828,6 +1186,8 @@ public class App {
 					accionCorreoModificarArticulo(optAccion, args);
 				} else if (accion.startsWith("correo")) {
 					accionCorreoTexto(optAccion, args);
+				} else if (accion.startsWith("correo")) {
+					accionCorreoPlantillaCondicion(optAccion, args);
 				} else if (accion.startsWith("compararestructura")) {
 					accionCompararEstructura(optAccion, args);
 				} else if (accion.startsWith("importarestructura")) {
