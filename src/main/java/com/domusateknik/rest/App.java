@@ -1186,7 +1186,7 @@ public class App {
 					accionCorreoModificarArticulo(optAccion, args);
 				} else if (accion.startsWith("correo")) {
 					accionCorreoTexto(optAccion, args);
-				} else if (accion.startsWith("correo")) {
+				} else if (accion.startsWith("correoplantilla")) {
 					accionCorreoPlantillaCondicion(optAccion, args);
 				} else if (accion.startsWith("compararestructura")) {
 					accionCompararEstructura(optAccion, args);
