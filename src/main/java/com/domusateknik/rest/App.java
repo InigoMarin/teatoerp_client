@@ -314,7 +314,7 @@ public class App {
 		Option optCondicionEan13 = Option.builder("condEan13").longOpt("condEan13").desc("Ejemplo: true o false")
 				.numberOfArgs(2).argName("condEan13").build();
 
-		Option optTemplate = Option.builder("templage").longOpt("template").desc("Ejemplo: true o false")
+		Option optTemplate = Option.builder("template").longOpt("template").desc("Ejemplo: true o false")
 				.numberOfArgs(2).argName("template").build();
 
 		Option optCod = Option.builder("cod").longOpt("cod").desc("Ejemplo: true o false").numberOfArgs(2)
@@ -411,28 +411,43 @@ public class App {
 			String revid = cmd.getOptionValue("revid");
 			String ean13 = cmd.getOptionValue("ean13");
 
-			String condExiste = cmd.getOptionValue("condExiste").toUpperCase();
 			Boolean condicionExiste = false;
-			if (condExiste == null || condExiste.equals("FALSO")) {
+			try {
+				String condExiste = cmd.getOptionValue("condExiste").toUpperCase();
+
+				if (condExiste == null || condExiste.equals("FALSO")) {
+					condicionExiste = false;
+				} else {
+					condicionExiste = true;
+				}
+			} catch (Exception e) {
 				condicionExiste = false;
-			} else {
-				condicionExiste = true;
 			}
 
-			String condItemRevision = cmd.getOptionValue("condItemRevision").toUpperCase();
 			Boolean condicionItemRevision = false;
-			if (condicionItemRevision == null || condicionItemRevision.equals("FALSO")) {
+			try {
+				String condItemRevision = cmd.getOptionValue("condItemRevision").toUpperCase();
+
+				if (condItemRevision == null || condItemRevision.equals("FALSO")) {
+					condicionItemRevision = false;
+				} else {
+					condicionItemRevision = true;
+				}
+			} catch (Exception e) {
 				condicionItemRevision = false;
-			} else {
-				condicionItemRevision = true;
 			}
 
-			String condEan13 = cmd.getOptionValue("condEan13").toUpperCase();
 			Boolean condicionEan13 = false;
-			if (condicionEan13 == null || condicionEan13.equals("FALSO")) {
+			try {
+				String condEan13 = cmd.getOptionValue("condEan13").toUpperCase();
+
+				if (condEan13 == null || condEan13.equals("FALSO")) {
+					condicionEan13 = false;
+				} else {
+					condicionEan13 = true;
+				}
+			} catch (Exception e) {
 				condicionEan13 = false;
-			} else {
-				condicionEan13 = true;
 			}
 
 			logger.info("*****PARAMETROS*******");
@@ -447,9 +462,9 @@ public class App {
 			logger.info("linea3=" + linea3);
 			logger.info("linea4=" + linea4);
 			logger.info("linea5=" + linea5);
-			logger.info("condExiste=" + condExiste);
-			logger.info("condEan13=" + condEan13);
-			logger.info("condItemRevision=" + condItemRevision);
+			logger.info("condExiste=" + condicionExiste);
+			logger.info("condEan13=" + condicionEan13);
+			logger.info("condItemRevision=" + condicionItemRevision);
 			logger.info("template=" + template);
 			logger.info("cod=" + cod);
 			logger.info("desc=" + desc);
@@ -476,6 +491,8 @@ public class App {
 			json.put("linea3", linea3);
 			json.put("linea4", linea4);
 			json.put("linea5", linea5);
+
+			json.put("template", template);
 
 			json.put("condicionExiste", condicionExiste);
 			json.put("condicionItemRevision", condicionItemRevision);
@@ -1184,10 +1201,10 @@ public class App {
 					accionCorreoCreacionArticulo(optAccion, args);
 				} else if (accion.startsWith("correomodificararticulo")) {
 					accionCorreoModificarArticulo(optAccion, args);
-				} else if (accion.startsWith("correo")) {
-					accionCorreoTexto(optAccion, args);
 				} else if (accion.startsWith("correoplantilla")) {
 					accionCorreoPlantillaCondicion(optAccion, args);
+				} else if (accion.startsWith("correo")) {
+					accionCorreoTexto(optAccion, args);
 				} else if (accion.startsWith("compararestructura")) {
 					accionCompararEstructura(optAccion, args);
 				} else if (accion.startsWith("importarestructura")) {
