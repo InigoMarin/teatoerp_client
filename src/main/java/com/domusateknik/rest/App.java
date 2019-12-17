@@ -373,7 +373,7 @@ public class App {
 		try {
 			cmd = parser.parse(options, args);
 			if (cmd.hasOption("accion") && cmd.hasOption("to") && cmd.hasOption("from") && cmd.hasOption("sub")
-					&& cmd.hasOption("user") && cmd.hasOption("body") && cmd.hasOption("template")) {
+					&& cmd.hasOption("user") && cmd.hasOption("template")) {
 				cmdOK = true;
 
 			} else {
