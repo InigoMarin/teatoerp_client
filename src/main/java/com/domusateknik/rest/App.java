@@ -332,11 +332,11 @@ public class App {
 		Option optng = Option.builder("ng").longOpt("ng").desc("Ejemplo:Nota particular").numberOfArgs(2).argName("ng")
 				.build();
 
-		Option optrevid = Option.builder("revid").longOpt("revid").desc("Ejemplo:Nota particular").numberOfArgs(2)
-				.argName("revid").build();
+		Option optrevid = Option.builder("revId").longOpt("revId").desc("Ejemplo:Nota particular").numberOfArgs(2)
+				.argName("revId").build();
 
-		Option optitemid = Option.builder("itemid").longOpt("itemid").desc("Ejemplo:Nota particular").numberOfArgs(2)
-				.argName("itemid").build();
+		Option optitemid = Option.builder("itemId").longOpt("itemId").desc("Ejemplo:Nota particular").numberOfArgs(2)
+				.argName("itemId").build();
 
 		Option optean13 = Option.builder("ean13").longOpt("ean13").desc("Ejemplo:Nota particular").numberOfArgs(2)
 				.argName("ean13").build();
@@ -378,10 +378,27 @@ public class App {
 
 			} else {
 				formatter.printHelp(APP_NAME, options);
+
+				String accion = cmd.getOptionValue("accion").toLowerCase();
+				String to = cmd.getOptionValue("to").toLowerCase();
+				String from = cmd.getOptionValue("from").toLowerCase();
+				String subject = cmd.getOptionValue("sub");
+				String user = cmd.getOptionValue("user");
+				String template = cmd.getOptionValue("template");
+
+				logger.info("accion=" + accion);
+				logger.info("to=" + to);
+				logger.info("from=" + from);
+				logger.info("subject=" + subject);
+				logger.info("user=" + user);
+				logger.info("template=" + template);
+
 				logger.severe("Falta parametros.");
 			}
 		} catch (ParseException e1) {
-			logger.severe("Falta parametros.");
+			logger.severe("Error procesando parametros.");
+			logger.severe(e1.toString());
+			e1.printStackTrace();
 			formatter.printHelp(APP_NAME, options);
 		}
 
@@ -471,8 +488,8 @@ public class App {
 			logger.info("cant=" + cant);
 			logger.info("np=" + np);
 			logger.info("ng=" + ng);
-			logger.info("revid=" + revid);
-			logger.info("itemid=" + itemid);
+			logger.info("revId=" + revid);
+			logger.info("itemId=" + itemid);
 			logger.info("ean13=" + ean13);
 			logger.info("******************");
 
