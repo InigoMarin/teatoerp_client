@@ -141,7 +141,9 @@ public class App {
 				logger.severe("Falta parametros.");
 			}
 		} catch (ParseException e1) {
-			logger.severe("Falta parametros.");
+			logger.severe("Error procesando parametros.");
+			logger.severe(e1.toString());
+			e1.printStackTrace();
 			formatter.printHelp(APP_NAME, options);
 		}
 
@@ -585,7 +587,9 @@ public class App {
 				logger.severe("Falta parametros.");
 			}
 		} catch (ParseException e1) {
-			logger.severe("Falta parametros.");
+			logger.severe("Error procesando parametros.");
+			logger.severe(e1.toString());
+			e1.printStackTrace();
 			formatter.printHelp(APP_NAME, options);
 		}
 
@@ -703,7 +707,9 @@ public class App {
 				logger.severe("Falta parametros.");
 			}
 		} catch (ParseException e1) {
-			logger.severe("Falta parametros.");
+			logger.severe("Error procesando parametros.");
+			logger.severe(e1.toString());
+			e1.printStackTrace();
 			formatter.printHelp(APP_NAME, options);
 		}
 
@@ -797,6 +803,9 @@ public class App {
 				formatter.printHelp(APP_NAME, options);
 			}
 		} catch (ParseException e1) {
+			logger.severe("Error procesando parametros.");
+			logger.severe(e1.toString());
+			e1.printStackTrace();
 			formatter.printHelp(APP_NAME, options);
 		}
 
@@ -869,6 +878,9 @@ public class App {
 				formatter.printHelp(APP_NAME, options);
 			}
 		} catch (ParseException e1) {
+			logger.severe("Error procesando parametros.");
+			logger.severe(e1.toString());
+			e1.printStackTrace();
 			formatter.printHelp(APP_NAME, options);
 		}
 
@@ -934,6 +946,9 @@ public class App {
 				formatter.printHelp(APP_NAME, options);
 			}
 		} catch (ParseException e1) {
+			logger.severe("Error procesando parametros.");
+			logger.severe(e1.toString());
+			e1.printStackTrace();
 			formatter.printHelp(APP_NAME, options);
 		}
 
@@ -993,6 +1008,9 @@ public class App {
 				formatter.printHelp(APP_NAME, options);
 			}
 		} catch (ParseException e1) {
+			logger.severe("Error procesando parametros.");
+			logger.severe(e1.toString());
+			e1.printStackTrace();
 			formatter.printHelp(APP_NAME, options);
 		}
 
@@ -1052,6 +1070,9 @@ public class App {
 				formatter.printHelp(APP_NAME, options);
 			}
 		} catch (ParseException e1) {
+			logger.severe("Error procesando parametros.");
+			logger.severe(e1.toString());
+			e1.printStackTrace();
 			formatter.printHelp(APP_NAME, options);
 		}
 
@@ -1121,6 +1142,9 @@ public class App {
 				formatter.printHelp(APP_NAME, options);
 			}
 		} catch (ParseException e1) {
+			logger.severe("Error procesando parametros.");
+			logger.severe(e1.toString());
+			e1.printStackTrace();
 			formatter.printHelp(APP_NAME, options);
 		}
 
@@ -1290,6 +1314,9 @@ public class App {
 				formatter.printHelp(APP_NAME, options);
 			}
 		} catch (ParseException e1) {
+			logger.severe("Error procesando parametros.");
+			logger.severe(e1.toString());
+			e1.printStackTrace();
 			formatter.printHelp(APP_NAME, options);
 		}
 
@@ -1356,6 +1383,9 @@ public class App {
 				formatter.printHelp(APP_NAME, options);
 			}
 		} catch (ParseException e1) {
+			logger.severe("Error procesando parametros.");
+			logger.severe(e1.toString());
+			e1.printStackTrace();
 			formatter.printHelp(APP_NAME, options);
 		}
 
@@ -1425,6 +1455,9 @@ public class App {
 				formatter.printHelp(APP_NAME, options);
 			}
 		} catch (ParseException e1) {
+			logger.severe("Error procesando parametros.");
+			logger.severe(e1.toString());
+			e1.printStackTrace();
 			formatter.printHelp(APP_NAME, options);
 		}
 
@@ -1490,6 +1523,9 @@ public class App {
 				formatter.printHelp(APP_NAME, options);
 			}
 		} catch (ParseException e1) {
+			logger.severe("Error procesando parametros.");
+			logger.severe(e1.toString());
+			e1.printStackTrace();
 			formatter.printHelp(APP_NAME, options);
 		}
 
@@ -1544,6 +1580,9 @@ public class App {
 				formatter.printHelp(APP_NAME, options);
 			}
 		} catch (ParseException e1) {
+			logger.severe("Error procesando parametros.");
+			logger.severe(e1.toString());
+			e1.printStackTrace();
 			formatter.printHelp(APP_NAME, options);
 		}
 
@@ -1603,6 +1642,9 @@ public class App {
 				formatter.printHelp(APP_NAME, options);
 			}
 		} catch (ParseException e1) {
+			logger.severe("Error procesando parametros.");
+			logger.severe(e1.toString());
+			e1.printStackTrace();
 			formatter.printHelp(APP_NAME, options);
 		}
 
@@ -1658,6 +1700,9 @@ public class App {
 				formatter.printHelp(APP_NAME, options);
 			}
 		} catch (ParseException e1) {
+			logger.severe("Error procesando parametros.");
+			logger.severe(e1.toString());
+			e1.printStackTrace();
 			formatter.printHelp(APP_NAME, options);
 		}
 
