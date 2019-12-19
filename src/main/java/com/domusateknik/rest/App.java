@@ -168,8 +168,8 @@ public class App {
 			String cant = cmd.getOptionValue("cant");
 			String np = cmd.getOptionValue("np");
 			String ng = cmd.getOptionValue("ng");
-			String itemid = cmd.getOptionValue("itemid");
-			String revid = cmd.getOptionValue("revid");
+			String itemid = cmd.getOptionValue("itemId");
+			String revid = cmd.getOptionValue("revId");
 			String ean13 = cmd.getOptionValue("ean13");
 
 			Boolean condicionExiste = false;
