@@ -426,8 +426,8 @@ public class App {
 			String cant = cmd.getOptionValue("cant");
 			String np = cmd.getOptionValue("np");
 			String ng = cmd.getOptionValue("ng");
-			String itemid = cmd.getOptionValue("itemid");
-			String revid = cmd.getOptionValue("revid");
+			String itemId = cmd.getOptionValue("itemId");
+			String revId = cmd.getOptionValue("revId");
 			String ean13 = cmd.getOptionValue("ean13");
 
 			Boolean condicionExiste = false;
@@ -490,8 +490,8 @@ public class App {
 			logger.info("cant=" + cant);
 			logger.info("np=" + np);
 			logger.info("ng=" + ng);
-			logger.info("revId=" + revid);
-			logger.info("itemId=" + itemid);
+			logger.info("revId=" + revId);
+			logger.info("itemId=" + itemId);
 			logger.info("ean13=" + ean13);
 			logger.info("******************");
 
@@ -521,8 +521,8 @@ public class App {
 			json.put("cantidad", cant);
 			json.put("notaparticular", np);
 			json.put("notageneral", ng);
-			json.put("revId", revid);
-			json.put("itemId", itemid);
+			json.put("revId", revId);
+			json.put("itemId", itemId);
 			json.put("ean13", ean13);
 
 			String parameter = json.toJSONString();
