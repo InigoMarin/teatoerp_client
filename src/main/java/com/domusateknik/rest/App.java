@@ -1382,6 +1382,10 @@ public class App {
 					acccionDocumentoBorrar(optAccion, args);
 				} else if (accion.startsWith("sbolpdf")) {
 					accionSbolPdf(optAccion, args);
+				} else if (accion.startsWith("borrarcodigo")) {
+					accionBorrarCodigo(optAccion, args);
+				} else if (accion.startsWith("borrar")) {
+					accionBorrar(optAccion, args);
 				} else {
 					accion(optAccion, args, usuarioAudi);
 				}
