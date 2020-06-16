@@ -857,6 +857,9 @@ public class App {
 		Option optextension = Option.builder("extension").longOpt("extension").desc("Ejemplo: entension")
 				.numberOfArgs(2).argName("extension").build();
 
+		Option optedicion = Option.builder("edicion").longOpt("edicion").desc("Ejemplo: edicion").numberOfArgs(2)
+				.argName("edicion").build();
+
 		options.addOption(optAccion);
 		options.addOption(optFilename);
 		options.addOption(optDestFilename);
@@ -864,6 +867,7 @@ public class App {
 		options.addOption(optpathdestino);
 
 		options.addOption(optextension);
+		options.addOption(optedicion);
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = null;
@@ -891,6 +895,7 @@ public class App {
 			String pathorigen = cmd.getOptionValue("pathorigen").toUpperCase();
 			String pathdestino = cmd.getOptionValue("pathdestino").toUpperCase();
 			String extension = cmd.getOptionValue("extension").toLowerCase();
+			String edicion = cmd.getOptionValue("edicion").toLowerCase();
 
 			logger.info("*****PARAMETROS*******");
 			logger.info("accion=" + accion);
@@ -899,11 +904,13 @@ public class App {
 			logger.info("pathorigen=" + pathorigen);
 			logger.info("pathdestino=" + pathdestino);
 			logger.info("extension=" + extension);
+			logger.info("edicion=" + edicion);
 			logger.info("**********************");
 
 			UriBuilder builder = UriBuilder.fromUri(resource).path("{accion}").queryParam("filename", filename)
 					.queryParam("destfilename", destfilename).queryParam("pathorigen", pathorigen)
-					.queryParam("pathdestino", pathdestino).queryParam("extension", extension);
+					.queryParam("pathdestino", pathdestino).queryParam("extension", extension)
+					.queryParam("edicion", edicion);
 
 			URI uri = builder.build(accion);
 
