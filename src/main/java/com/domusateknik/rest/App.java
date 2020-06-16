@@ -1039,6 +1039,118 @@ public class App {
 
 	}
 
+	public static void accionBorrar(Option optAccion, String[] args) {
+		logger.info("Accion Borrar Empezar.");
+		HelpFormatter formatter = new HelpFormatter();
+		Options options = new Options();
+
+		Option optCodigo = Option.builder("codigo").longOpt("codigo").desc("Ejemplo: codigo=CDOC232344.pdf")
+				.numberOfArgs(2).argName("codigo").build();
+
+		Option optRuta = Option.builder("ruta").longOpt("ruta").desc("Ejemplo: ruta=c:\\ruta\\").numberOfArgs(2)
+				.argName("ruta").build();
+
+		options.addOption(optAccion);
+		options.addOption(optCodigo);
+		options.addOption(optRuta);
+
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = null;
+
+		Boolean cmdOK = false;
+		try {
+			cmd = parser.parse(options, args);
+			if (cmd.hasOption("codigo") && cmd.hasOption("ruta")) {
+				cmdOK = true;
+			} else {
+				formatter.printHelp(APP_NAME, options);
+			}
+		} catch (ParseException e1) {
+			logger.severe("Error procesando parametros.");
+			logger.severe(e1.toString());
+			e1.printStackTrace();
+			formatter.printHelp(APP_NAME, options);
+		}
+
+		if (cmdOK) {
+			String accion = cmd.getOptionValue("accion").toLowerCase();
+			String codigo = cmd.getOptionValue("codigo").toUpperCase();
+			String ruta = cmd.getOptionValue("ruta").toUpperCase();
+
+			logger.info("*****PARAMETROS*******");
+			logger.info("accion=" + accion);
+			logger.info("codigo=" + codigo);
+			logger.info("ruta=" + ruta);
+			logger.info("**********************");
+
+			UriBuilder builder = UriBuilder.fromUri(resource).path("{accion}").queryParam("codigo", codigo)
+					.queryParam("ruta", ruta);
+
+			URI uri = builder.build(accion);
+
+			enviarDatosServidor(uri.toString());
+
+		}
+		logger.info("Accion Borrar Finalizar.");
+
+	}
+
+	public static void accionBorrarCodigo(Option optAccion, String[] args) {
+		logger.info("Accion BorrarCodigo Empezar.");
+		HelpFormatter formatter = new HelpFormatter();
+		Options options = new Options();
+
+		Option optCodigo = Option.builder("codigo").longOpt("codigo").desc("Ejemplo: codigo=CDOC232344").numberOfArgs(2)
+				.argName("codigo").build();
+
+		Option optRuta = Option.builder("ruta").longOpt("ruta").desc("Ejemplo: ruta=c:\\ruta\\").numberOfArgs(2)
+				.argName("ruta").build();
+
+		options.addOption(optAccion);
+		options.addOption(optCodigo);
+		options.addOption(optRuta);
+
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = null;
+
+		Boolean cmdOK = false;
+		try {
+			cmd = parser.parse(options, args);
+			if (cmd.hasOption("codigo") && cmd.hasOption("ruta")) {
+				cmdOK = true;
+			} else {
+				formatter.printHelp(APP_NAME, options);
+			}
+		} catch (ParseException e1) {
+			logger.severe("Error procesando parametros.");
+			logger.severe(e1.toString());
+			e1.printStackTrace();
+			formatter.printHelp(APP_NAME, options);
+		}
+
+		if (cmdOK) {
+			String accion = cmd.getOptionValue("accion").toLowerCase();
+			String codigo = cmd.getOptionValue("codigo").toUpperCase();
+			String ruta = cmd.getOptionValue("ruta").toUpperCase();
+
+			logger.info("*****PARAMETROS*******");
+			logger.info("accion=" + accion);
+			logger.info("codigo=" + codigo);
+			logger.info("ruta=" + ruta);
+			logger.info("**********************");
+
+			UriBuilder builder = UriBuilder.fromUri(resource).path("{accion}").queryParam("codigo", codigo)
+					.queryParam("ruta", ruta);
+
+			URI uri = builder.build(accion);
+
+			enviarDatosServidor(uri.toString());
+
+		}
+		logger.info("Accion BorrarCodigo Finalizar.");
+
+	}
+
 	public static void accionTipo(Option optAccion, String[] args, String usuarioAudi) {
 		logger.info("Accion Cambiar Tipo Empezar.");
 		HelpFormatter formatter = new HelpFormatter();
