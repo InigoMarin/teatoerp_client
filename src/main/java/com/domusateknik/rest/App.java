@@ -895,7 +895,13 @@ public class App {
 			String pathorigen = cmd.getOptionValue("pathorigen").toUpperCase();
 			String pathdestino = cmd.getOptionValue("pathdestino").toUpperCase();
 			String extension = cmd.getOptionValue("extension").toLowerCase();
-			String edicion = cmd.getOptionValue("edicion").toLowerCase();
+
+			String edicion = "";
+			try {
+				edicion = cmd.getOptionValue("edicion").toLowerCase();
+			} catch (Exception e) {
+				edicion = "";
+			}
 
 			logger.info("*****PARAMETROS*******");
 			logger.info("accion=" + accion);
@@ -909,8 +915,11 @@ public class App {
 
 			UriBuilder builder = UriBuilder.fromUri(resource).path("{accion}").queryParam("filename", filename)
 					.queryParam("destfilename", destfilename).queryParam("pathorigen", pathorigen)
-					.queryParam("pathdestino", pathdestino).queryParam("extension", extension)
-					.queryParam("edicion", edicion);
+					.queryParam("pathdestino", pathdestino).queryParam("extension", extension);
+
+			if (edicion != "") {
+				builder.queryParam("edicion", edicion);
+			}
 
 			URI uri = builder.build(accion);
 
