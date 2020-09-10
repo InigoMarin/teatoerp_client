@@ -890,11 +890,11 @@ public class App {
 
 		if (cmdOK) {
 			String accion = cmd.getOptionValue("accion").toLowerCase();
-			String filename = cmd.getOptionValue("filename").toUpperCase();
-			String destfilename = cmd.getOptionValue("destfilename").toUpperCase();
-			String pathorigen = cmd.getOptionValue("pathorigen").toUpperCase();
-			String pathdestino = cmd.getOptionValue("pathdestino").toUpperCase();
-			String extension = cmd.getOptionValue("extension").toLowerCase();
+			String filename = cmd.getOptionValue("filename");
+			String destfilename = cmd.getOptionValue("destfilename");
+			String pathorigen = cmd.getOptionValue("pathorigen");
+			String pathdestino = cmd.getOptionValue("pathdestino");
+			String extension = cmd.getOptionValue("extension");
 
 			String edicion = "";
 			try {
