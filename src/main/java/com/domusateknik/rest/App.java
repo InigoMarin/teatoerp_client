@@ -27,11 +27,11 @@ public class App {
 	private static final Logger logger = Logger.getLogger("App");
 	private static final String APP_NAME = "Inteface.jar";
 
-	private static final String resource = "http://vmtc1:8083/api/";
-	private static final String resourceWeb = "http://vmtc1:8083/";
+	// private static final String resource = "http://vmtc1:8083/api/";
+	// private static final String resourceWeb = "http://vmtc1:8083/";
 
-	// private static final String resource = "http://localhost:8083/api/";
-	// private static final String resourceWeb = "http://localhost:8083/";
+	private static final String resource = "http://localhost:8083/api/";
+	private static final String resourceWeb = "http://localhost:8083/";
 
 	public static void accionCorreoTexto(Option optAccion, String[] args) {
 		logger.info("Accion Enviar correo Texto Empezar.");
