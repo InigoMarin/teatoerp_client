@@ -27,11 +27,11 @@ public class App {
 	private static final Logger logger = Logger.getLogger("App");
 	private static final String APP_NAME = "Inteface.jar";
 
-	// private static final String resource = "http://vmtc1:8083/api/";
-	// private static final String resourceWeb = "http://vmtc1:8083/";
+	private static final String resource = "http://vmtc1:8083/api/";
+	private static final String resourceWeb = "http://vmtc1:8083/";
 
-	private static final String resource = "http://localhost:8083/api/";
-	private static final String resourceWeb = "http://localhost:8083/";
+	//private static final String resource = "http://localhost:8083/api/";
+	//private static final String resourceWeb = "http://localhost:8083/";
 
 	public static void accionCorreoTexto(Option optAccion, String[] args) {
 		logger.info("Accion Enviar correo Texto Empezar.");
@@ -771,6 +771,84 @@ public class App {
 		logger.info("Accion Enviar correo Finalizar.");
 
 	}
+	
+	public static void accionCaracteristica(Option optAccion, String[] args) {
+		logger.info("Accion Enviar correo Empezar.");
+		HelpFormatter formatter = new HelpFormatter();
+		Options options = new Options();
+	
+		Option optCod = Option.builder("cod").longOpt("cod").desc("codigo").numberOfArgs(2).argName("cod")
+				.build();
+
+		Option optCaracteristica = Option.builder("caracteritica").longOpt("caracteristica").desc("Caracteristica").numberOfArgs(2)
+				.argName("caracteristica").build();
+
+		Option optValor = Option.builder("valor").longOpt("valor").desc("Valor").numberOfArgs(2)
+				.argName("valor").build();
+
+		options.addOption(optAccion);
+		options.addOption(optCod);
+		options.addOption(optCaracteristica);
+		options.addOption(optValor);
+		
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = null;
+		Boolean cmdOK = false;
+		try {
+			cmd = parser.parse(options, args);
+			if (cmd.hasOption("cod") && cmd.hasOption("caracteristica") && cmd.hasOption("valor"))  {
+				cmdOK = true;
+			} else {
+				formatter.printHelp(APP_NAME, options);
+				logger.severe("Falta parametros.");
+			}
+		} catch (ParseException e1) {
+			logger.severe("Error procesando parametros.");
+			logger.severe(e1.toString());
+			e1.printStackTrace();
+			formatter.printHelp(APP_NAME, options);
+		}
+
+		if (cmdOK) {
+
+			String getUrl = "";
+
+			String accion = cmd.getOptionValue("accion").toLowerCase();
+			String cod = cmd.getOptionValue("cod");
+			String caracteristica = cmd.getOptionValue("caracteristica");
+			String valor = cmd.getOptionValue("valor");
+
+			logger.info("*****PARAMETROS*******");
+			logger.info("accion=" + accion);
+			logger.info("cod=" + cod);
+			logger.info("caracteristica=" + caracteristica );
+			logger.info("valor=" + valor);
+			logger.info("******************");
+
+			// FORMATO GET
+			/*
+			 * getUrl = resource + accion + "?to=" + to + "&from=" + from + "&subject=" +
+			 * subject + "&body=" + body + "&user=" + user;
+			 * 
+			 * enviarDatosServidor(getUrl);
+			 */
+
+			getUrl = resource + accion;
+
+			JSONObject json = new JSONObject();
+
+			json.put("cod", cod);
+			json.put("caracteristica", caracteristica);
+			json.put("valor", valor);
+			
+			String parameter = json.toJSONString();
+
+			enviarDatosServidorPost(getUrl, parameter);
+
+		}
+		logger.info("Accion Enviar correo Finalizar.");
+
+	}
 
 	public static void accionImportarEstructura(Option optAccion, String[] args) {
 		logger.info("Accion Importar Estructura Empezar.");
@@ -1374,6 +1452,8 @@ public class App {
 					accionCorreoPlantillaCondicion(optAccion, args);
 				} else if (accion.startsWith("correo")) {
 					accionCorreoTexto(optAccion, args);
+				} else if (accion.startsWith("caracteristica")) {
+					accionCaracteristica(optAccion, args);
 				} else if (accion.startsWith("compararestructura")) {
 					accionCompararEstructura(optAccion, args);
 				} else if (accion.startsWith("importarestructura")) {
